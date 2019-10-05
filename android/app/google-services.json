@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "601784083513",
+    "firebase_url": "https://flashchat-180c0.firebaseio.com",
+    "project_id": "flashchat-180c0",
+    "storage_bucket": "flashchat-180c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601784083513:android:8076b2ad8834582b",
+        "android_client_info": {
+          "package_name": "co.jugjot.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "601784083513-lhrm546dlemq64lghicrregr2men3u6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.jugjot.flash_chat",
+            "certificate_hash": "54ff8c78c40b1c354ddfdb06f4145842d9ebe3fc"
+          }
+        },
+        {
+          "client_id": "601784083513-43j5stp9okc12kbf78j8ccuu03spqea8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9TkjrGNeHRELumqj9typoUPX9ApybmiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "601784083513-43j5stp9okc12kbf78j8ccuu03spqea8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

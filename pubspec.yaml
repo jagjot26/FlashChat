@@ -1,0 +1,56 @@
+name: flash_chat
+description: A new Flutter application.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  date_format: ^1.0.6
+  pin_code_text_field: ^1.4.0
+  firebase_storage: ^3.0.6
+  uuid: ^2.0.2
+  image: ^2.1.4
+  path_provider: ^1.2.0
+  font_awesome_flutter: ^8.5.0
+  image_picker: ^0.6.1+4
+  permission_handler: ^3.2.2
+  contacts_service: ^0.3.0
+  emoji_picker: ^0.0.2
+  provider: ^3.1.0
+  shared_preferences: ^0.5.3+4
+  firebase_core: ^0.4.0+8    #very important for Firebase
+  firebase_auth: ^0.11.1+12  #very important for Firebase
+  cloud_firestore: ^0.12.7+1 #very important for Firebase
+  modal_progress_hud: ^0.1.3
+  country_icons: ^1.1.0
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Regular.ttf
+          weight: 700
+    - family: Manjari
+      fonts:
+        - asset: fonts/Manjari-Regular.ttf
+          weight: 700
+  uses-material-design: true
+
+  assets:
+    - images/
+    - country-icons/
+    - flags-medium/
+
+
+
+
