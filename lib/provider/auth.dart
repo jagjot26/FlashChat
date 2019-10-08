@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/models/user.dart';
+import 'dart:io';
 
 
 final usersRef = Firestore.instance.collection('users');
@@ -47,7 +48,7 @@ class Auth with ChangeNotifier {
   }
 
 
-  createUserInFireStore(FirebaseUser user, String phoneNumber, String displayName) async {
+  createUserInFireStore(FirebaseUser user, String phoneNumber, String displayName, File image) async {
     // 1) check if user exists in users collection in database (according to their id)
     DocumentSnapshot doc = await usersRef.document(user.uid).get();
     

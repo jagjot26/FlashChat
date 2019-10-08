@@ -81,7 +81,7 @@ class _EditProfileState extends State<EditProfile> {
     });
 
     await Provider.of<Auth>(context, listen: false).createUserInFireStore(
-      Provider.of<Auth>(context,listen: false).user, widget.phoneNumber, displayName
+      Provider.of<Auth>(context,listen: false).user, widget.phoneNumber, displayName, this.image
     );
      Navigator.pushReplacementNamed(context, ChatListScreen.id);  //check this without await as it doesn't seem like it's reqd here
   }
@@ -112,7 +112,7 @@ class _EditProfileState extends State<EditProfile> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6),
                     child: Text('Please provide your name and an optional profile picture.',textAlign: TextAlign.center,style: TextStyle(fontSize: 16,fontWeight:FontWeight.w600 ,color: Colors.blueGrey),)),
-                SizedBox(height: MediaQuery.of(context).size.height*0.06,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.045,),
                 ListTile(
                   leading: GestureDetector(
                     onTap: () => handleSelectImage(context),
