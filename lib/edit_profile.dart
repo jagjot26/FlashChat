@@ -13,9 +13,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
 import 'package:uuid/uuid.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_cropper/image_cropper.dart';
 
+String downloadUrl;
 String displayName;
 bool isLoading = false;
+bool isImageLoading = false;
 class EditProfile extends StatefulWidget {
   static const id = 'edit_profile';
 
@@ -30,6 +34,18 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   File image;
+
+
+uploadImageAndGetDownloadUrl() async{
+  StorageReference ref = FirebaseStorage.instance.ref().child(widget.phoneNumber);
+  StorageUploadTask uploadTask = ref.putFile(this.image);
+  StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+  downloadUrl = await taskSnapshot.ref.getDownloadURL();
+  setState(() {
+   isImageLoading = false; 
+  });
+}
+
 
   handleSelectImage(BuildContext parentContext){
     return showDialog(context: parentContext, builder: (context){
@@ -61,17 +77,38 @@ class _EditProfileState extends State<EditProfile> {
   handleImageFromCamera() async{
     Navigator.pop(context);
     File image = await ImagePicker.pickImage(source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
-    setState(() {
-      this.image = image;
-    });
+    this.image = image;
+    // setState(() {
+    //   this.image = image;
+    // });
   }
 
   handleImageFromGallery() async{
     Navigator.pop(context);
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: image.path,
+      maxHeight: 512,
+      maxWidth: 512,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+    );
+
+   var result = await FlutterImageCompress.compressAndGetFile(
+        croppedFile.path, croppedFile.path,
+        quality: 68,
+      );
     setState(() {
-      this.image = image;
-    });
+       isImageLoading = true;
+    }); 
+    this.image = result;
+      
+    await uploadImageAndGetDownloadUrl();
+    // setState(() {
+    //   this.image = image;
+    // });
   }
 
 
@@ -81,7 +118,7 @@ class _EditProfileState extends State<EditProfile> {
     });
 
     await Provider.of<Auth>(context, listen: false).createUserInFireStore(
-      Provider.of<Auth>(context,listen: false).user, widget.phoneNumber, displayName, this.image
+      Provider.of<Auth>(context,listen: false).user, widget.phoneNumber, displayName, downloadUrl
     );
      Navigator.pushReplacementNamed(context, ChatListScreen.id);  //check this without await as it doesn't seem like it's reqd here
   }
@@ -123,12 +160,13 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       width: MediaQuery.of(context).size.width*0.1466,
                       height: MediaQuery.of(context).size.height*0.1466,
-                      child: (image==null) ? Icon(FontAwesomeIcons.camera): Container(
+                      child: (image==null) ? Icon(FontAwesomeIcons.camera): 
+                        isImageLoading==true ? circularProgress() : Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10),),
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: FileImage(image),
+                              image: NetworkImage(downloadUrl),
                             )
                         ),
                       ),),

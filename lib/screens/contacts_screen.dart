@@ -10,10 +10,15 @@ import 'dart:async';
 import 'chat_screen.dart';
 import 'package:flash_chat/provider/auth.dart';
 import 'package:flash_chat/models/user.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 final usersRef = Firestore.instance.collection('users');
 QuerySnapshot qs;
 bool boolGetQSDocuments = false;
+bool boolGetPhoneNumber = false;
+String loggedInUserPhoneNumber;
 
 class ContactsScreen extends StatefulWidget {
   static const id = 'contacts_screen';
@@ -31,6 +36,16 @@ class _ContactsScreenState extends State<ContactsScreen> {
   int counter = 0;
  
 
+ setLoggedInUserPhoneNumber() async{
+   boolGetPhoneNumber = false;
+   final prefs = await SharedPreferences.getInstance();
+   loggedInUserPhoneNumber = prefs.getString("loggedInUserPhoneNumber");
+   setState(() {
+     boolGetPhoneNumber = true;
+   });
+   
+}
+
   fetchContacts() async{
     Iterable<Contact> cnt = await ContactsService.getContacts(withThumbnails: false);
     _newTempNumber = '${cnt.length.toString()} contacts';
@@ -46,6 +61,7 @@ fetchUsersRef() async{
   @override
   void initState() {
     super.initState();
+    setLoggedInUserPhoneNumber();
     fetchUsersRef();
 
   }
@@ -73,8 +89,8 @@ fetchUsersRef() async{
 bool displayContact = false;
 // User user = Provider.of<Auth>(context, listen: false).presentUser;
 
-onContactTap(BuildContext context,String name, String receiverUserID, String receiverPhoneNumber){  
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatScreen(receiverName: name, receiverUserID: receiverUserID, receiverPhoneNumber: receiverPhoneNumber)));
+onContactTap(BuildContext context,String name, String receiverUserID, String receiverPhoneNumber, String downloadUrl){  
+Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatScreen(receiverName: name, receiverUserID: receiverUserID, receiverPhoneNumber: receiverPhoneNumber, imageDownloadUrl: downloadUrl,)));
 }
 
   Widget createListView(BuildContext context, AsyncSnapshot snapshot){
@@ -88,17 +104,19 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
           if(boolGetQSDocuments==false){
             return circularProgress();
           }
+        String downloadUrl = 'd';  
         Map<String,String> getUserIDs = {'randomName' : 'we23e232'};
         Map<String,String> getUserPhoneNumbers = {'few' : 'wewe'};
         String phoneNumberAtIndex = (contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value;
         this.displayContact = false;
         var listOfDocuments = qs.documents;
     listOfDocuments?.forEach((doc){
-     if(doc["phoneNumber"] == phoneNumberAtIndex.split(" ").join("")) 
+     if(doc["phoneNumber"] == phoneNumberAtIndex.split(" ").join("") && doc["phoneNumber"] != loggedInUserPhoneNumber.split(" ").join("")) 
      {
        this.displayContact = true;
        getUserIDs[contactsList[index].displayName] = doc["id"]; 
        getUserPhoneNumbers[contactsList[index].displayName] = doc['phoneNumber'];
+       downloadUrl = doc['imageDownloadUrl'];
        
      }
      counter++;
@@ -106,9 +124,15 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
         
         if(displayContact==true){
          return GestureDetector(
-           onTap: () => onContactTap(context, contactsList[index].displayName, getUserIDs[contactsList[index].displayName], getUserPhoneNumbers[contactsList[index].displayName]),
+           onTap: () => onContactTap(context, contactsList[index].displayName, getUserIDs[contactsList[index].displayName], getUserPhoneNumbers[contactsList[index].displayName], downloadUrl),
             child: ListTile(
-            leading: CircleAvatar(child: Image.asset('images/blah.png'),) ,
+            leading: (downloadUrl==null) ? CircleAvatar(radius: 21, child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 21, child: ClipOval(
+  child: FadeInImage.assetNetwork(
+            placeholder: 'gifs/760.gif',
+            image: downloadUrl,
+            fit: BoxFit.fill,
+          ),
+),) ,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

@@ -1,5 +1,7 @@
+import 'package:flash_chat/edit_profile.dart';
 import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/chatList_screen.dart';
+import 'package:flash_chat/screens/fullsize_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/models/user.dart';
@@ -9,6 +11,7 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_format/date_format.dart';
 import 'dart:math';
+import 'fullsize_image.dart';
 
 String loggedInUserID;
 String loggedInUserPhoneNumber;
@@ -16,18 +19,20 @@ User loggedInUser;
 String receivUserID;
 DateTime timestamp;
 final activeUsersRef = Firestore.instance.collection('activeUsers');
-final indexRef = Firestore.instance.collection('index');
+
 int indexFirestore;
 bool boolGetPhoneNumber = false;
 bool boolGetLoggedInUserID = false;
+String loggedInUserImage;
 
 
 class ChatScreen extends StatefulWidget {
 final String receiverName;
 final receiverUserID;
 final String receiverPhoneNumber;
+final String imageDownloadUrl;
 
-ChatScreen({this.receiverName, this.receiverUserID, this.receiverPhoneNumber});
+ChatScreen({this.receiverName, this.receiverUserID, this.receiverPhoneNumber, this.imageDownloadUrl});
 
 
   @override
@@ -47,6 +52,7 @@ setLoggedInUserPhoneNumber() async{
    boolGetPhoneNumber = false;
    final prefs = await SharedPreferences.getInstance();
    loggedInUserPhoneNumber = prefs.getString("loggedInUserPhoneNumber");
+   loggedInUserImage = prefs.getString("loggedInUserImage");
    setState(() {
      boolGetPhoneNumber = true;
    });
@@ -66,6 +72,17 @@ setLoggedInUserID() async{
 }
 
 
+fullScreenImage(BuildContext context){
+  if(widget.imageDownloadUrl!=null){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => FullSizeImage(downloadUrl: widget.imageDownloadUrl,)));
+}
+else{
+  Scaffold.of(context).showSnackBar(SnackBar(action: SnackBarAction(label: 'OK', onPressed: (){},) ,content: Text("This user hasn't uploaded any profile picture"
+  )));
+}
+  }
+
+
 
 @override
   void initState() {
@@ -78,19 +95,37 @@ setLoggedInUserID() async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.all(8.5),
-          child: CircleAvatar(child: Image.asset('images/blah.png'),),
+      appBar: PreferredSize(
+              preferredSize: Size.fromHeight(56),
+              child: Builder(
+          builder: (BuildContext context){
+          return AppBar(
+          leading: Padding(
+            padding: EdgeInsets.all(8.5),
+            child : GestureDetector(onTap: ()=> fullScreenImage(context) ,child : (widget.imageDownloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
+  child: FadeInImage.assetNetwork(
+              placeholder: 'gifs/760.gif',
+              image: widget.imageDownloadUrl,
+              fit: BoxFit.fill,
+            ),
+),
+) ,
+),
+             
+          ),
+          title: (widget.receiverName == 'defaultName') ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left) : Text(widget.receiverName, textAlign: TextAlign.left),
+          actions: <Widget>[
+            Padding(
+            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.038),
+            child: Icon(Icons.more_vert,color: Colors.white,),
+          ),
+          ],
+        );
+        }
         ),
-        title: (widget.receiverName == 'defaultName') ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left) : Text(widget.receiverName, textAlign: TextAlign.left),
-        actions: <Widget>[
-          Padding(
-          padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.038),
-          child: Icon(Icons.more_vert,color: Colors.white,),
-        ),
-        ],
       ),
+      
+      
     body: Column(
         children: <Widget>[
          (boolGetLoggedInUserID == true && boolGetPhoneNumber == true ) ? Expanded(child: MessagesStream()) : Expanded(child: circularProgress()),
@@ -141,13 +176,15 @@ setLoggedInUserID() async{
                               var data = {
                                 'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
                                 'receiverID' : widget.receiverUserID,
-                                'phoneNumber' : widget.receiverPhoneNumber
+                                'phoneNumber' : widget.receiverPhoneNumber,
+                                'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl
                               };
 
                               var data2 = {
                                 'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
                                 'receiverID' : loggedInUserID,
                                 'phoneNumber' : loggedInUserPhoneNumber,
+                                'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage
                                  
                               };
                              

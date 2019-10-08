@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
+import 'package:flash_chat/home_screen.dart';
 
 class User {
   final String id;
   final String displayName;
   final String bio;
   final String phoneNumber;
+  final String imageDownloadUrl;
 
 
   User({
@@ -13,6 +14,7 @@ class User {
     this.displayName,
     this.bio,
     this.phoneNumber,
+    this.imageDownloadUrl,
   });
 
   factory User.fromDocument(DocumentSnapshot doc) {
@@ -21,6 +23,7 @@ class User {
       displayName: doc['displayName'],
       bio: doc['bio'],
       phoneNumber: doc['phoneNumber'],
+      imageDownloadUrl : doc['imageDownloadUrl'],
     );
   }
 }

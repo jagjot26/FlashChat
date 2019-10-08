@@ -7,7 +7,10 @@ environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
 
 dependencies:
+  flutter_image_compress: ^0.6.3
+  image_cropper: ^1.1.0
   date_format: ^1.0.6
+  transparent_image: ^1.0.0
   pin_code_text_field: ^1.4.0
   firebase_storage: ^3.0.6
   uuid: ^2.0.2
@@ -50,7 +53,7 @@ flutter:
     - images/
     - country-icons/
     - flags-medium/
-
+    - gifs/
 
 
 

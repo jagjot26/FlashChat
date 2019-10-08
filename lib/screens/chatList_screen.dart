@@ -121,25 +121,33 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
   }
 }
 
-openChatScreen(String name, String phoneNumber, String userID, BuildContext context){
-Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID)));
+openChatScreen(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl){
+Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl,)));
 }
 
 class MessagedContactsWidget extends StatelessWidget {
   final String contactName;
   final String phoneNumber;
   final String userID;
+  final String downloadUrl;
 
-  MessagedContactsWidget({this.contactName = 'defaultName', this.phoneNumber, this.userID});
+  MessagedContactsWidget({this.contactName = 'defaultName', this.phoneNumber, this.userID, this.downloadUrl});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-          onTap: ()=> openChatScreen(contactName, phoneNumber, userID, context),
+          onTap: ()=> openChatScreen(contactName, phoneNumber, userID, context, this.downloadUrl),
           child: Column(
         children: <Widget>[
           ListTile(
-            leading: CircleAvatar(),
+            leading: (this.downloadUrl == 'NoImage') ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
+  child: FadeInImage.assetNetwork(
+              placeholder: 'gifs/760.gif',
+              image: this.downloadUrl,
+              fit: BoxFit.fill,
+            ),
+),
+),
             title: 
             (contactName == 'defaultName') ? Text(phoneNumber, style: TextStyle(fontSize: 20),) : Text(contactName, style: TextStyle(fontSize: 20),),
           ),
@@ -174,6 +182,7 @@ class ChatList extends StatelessWidget {
         List<MessagedContactsWidget> listOfMessagedContactsWidget = [];
           for(var users in messagedUsers){
           final String userPhoneNumber = users.data['phoneNumber'];
+          final String downloadUrl = users.data['image'];
           final String receiverID = users.data['receiverID'];
           for(int index = 0; index < contactsList.length; index++){
             phoneNumberAtIndex = (contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value;
@@ -190,10 +199,10 @@ class ChatList extends StatelessWidget {
         isUserNameActuallyNumber = isNumeric(userName);
            var messagedContact;
          if(isUserNameActuallyNumber == true){
-            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID,);
+            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl,);
          }
          else{
-            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID);
+            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl,);
          }
 
           

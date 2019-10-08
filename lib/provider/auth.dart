@@ -48,14 +48,15 @@ class Auth with ChangeNotifier {
   }
 
 
-  createUserInFireStore(FirebaseUser user, String phoneNumber, String displayName, File image) async {
+  createUserInFireStore(FirebaseUser user, String phoneNumber, String displayName, String downloadUrl) async {
     // 1) check if user exists in users collection in database (according to their id)
-    DocumentSnapshot doc = await usersRef.document(user.uid).get();
+    DocumentSnapshot doc;
     
     final prefs2 = await SharedPreferences.getInstance();
       prefs2.setString("loggedInUserPhoneNumber", phoneNumber);
 
-    if (!doc.exists) {
+    final prefs3 = await SharedPreferences.getInstance();
+    prefs3.setString("loggedInUserImage", downloadUrl);
       // 2) if the user doesn't exist, then we want to take them to the create account page
 //      final username = await Navigator.push(
 //          context, MaterialPageRoute(builder: (context) => CreateAccount()));
@@ -67,11 +68,12 @@ class Auth with ChangeNotifier {
         "bio": "",
         "phoneNumber": phoneNumber,
         "timestamp": timestamp,
+        "imageDownloadUrl" : downloadUrl
       });    
     
       
       doc = await usersRef.document(user.uid).get();
-    }
+    
 
     presentUser = User.fromDocument(doc);
   }
