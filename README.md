@@ -1,6 +1,5 @@
 # FlashChat
 
-## Features
 
 ### Registration page
 In this app, we’ll have users to sign in with a phone number. After registering, users can create their own profiles where they can add personal information and a profile photo.
