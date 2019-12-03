@@ -1,16 +1,24 @@
-# flash_chat
+# FlashChat
 
-A new Flutter application.
 
-## Getting Started
+<dl>
+<dt> Registration page </dt>
+<dd>In this app, we’ll have users to sign in with a phone number. After registering, users can create their own profiles where they can add personal information and a profile photo.</dd>
 
-This project is a starting point for a Flutter application.
+<dt>Contact integration</dt>
+<dd>Once registered, the users can import their contacts, provided that those contacts have already registered. </dd>
 
-A few resources to get you started if this is your first Flutter project:
+<dt>Profile customization</dt>
+<dd>Users can change their names, background colors, and choose an avatar photo from the camera roll or by taking a photo instantly. 
+Also, the users can change their bio, as and when they want. </dd>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+<dt>Messaging</dt>
+<dd>This is the most essential feature of this app.
+So, this app can handle one to one messaging without any slouch. </dd>
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<dt>Push notifications</dt>
+<dd>These serve as a the direct line of communication between the messenger and its users. These handy messages keep users active within the app and inform them when new messages have arrived or someone comes online.</dd>
+</dl>
+
+
+
