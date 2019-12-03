@@ -81,6 +81,7 @@ uploadImageAndGetDownloadUrl() async{
     // setState(() {
     //   this.image = image;
     // });
+    await uploadImageAndGetDownloadUrl();
   }
 
   handleImageFromGallery() async{

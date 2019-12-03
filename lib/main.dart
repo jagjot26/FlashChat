@@ -15,6 +15,7 @@ import 'screens/otp_screen.dart';
 import 'screens/tempScreen.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 
+//VERY IMPORTANTTTTTTTTTTTTTTTTTTT: MULTIPLE VERTICALLY STACKED CIRCLES ERROR ON CONTACT SCREEN
 //handle landscape orientation, because it's literally in shambles rn
 // handle invalid verification code error
 //handle image upload to Firestore along with other items as a document after compression and conversion to string

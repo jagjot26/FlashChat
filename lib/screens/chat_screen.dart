@@ -12,6 +12,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_format/date_format.dart';
 import 'dart:math';
 import 'fullsize_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 String loggedInUserID;
 String loggedInUserPhoneNumber;
@@ -84,6 +89,7 @@ else{
 
 
 
+
 @override
   void initState() {
    
@@ -91,6 +97,150 @@ else{
     setLoggedInUserID();
     super.initState();
   }
+
+File image;
+String downloadUrl;
+bool downloadUrlBool = false;
+uploadImageAndGetDownloadUrl() async{
+  var random = Random.secure();
+  var value = random.nextInt(1000000000);
+  StorageReference ref = FirebaseStorage.instance.ref().child(value.toString());
+  StorageUploadTask uploadTask = ref.putFile(this.image);
+  StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+  downloadUrl = await taskSnapshot.ref.getDownloadURL();
+  setState(() {
+   downloadUrlBool = true;
+  });
+  handleDownloadUrl(downloadUrl);
+}
+
+handleSelectImage(BuildContext parentContext){
+return showDialog(context: parentContext, builder: (context){
+      return SimpleDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(14.0),),
+        ),
+        title: Text('Choose an Image'),
+        children: <Widget>[
+          SimpleDialogOption(
+            child: Text('Photo from Camera'),
+            onPressed: handleImageFromCamera,
+          ),
+          Divider(),
+          SimpleDialogOption(
+            child: Text('Choose from Gallery'),
+            onPressed: handleImageFromGallery,
+          ),
+          Divider(),
+          SimpleDialogOption(
+            child: Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+    });
+}
+
+
+  handleImageFromCamera() async{
+    Navigator.pop(context);
+    File image = await ImagePicker.pickImage(source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: image.path,
+      maxHeight: 512,
+      maxWidth: 512,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+    );
+
+   var result = await FlutterImageCompress.compressAndGetFile(
+        croppedFile.path, croppedFile.path,
+        quality: 68,
+      );
+   
+    this.image = result;
+    // setState(() {
+    //   this.image = image;
+    // });
+    await uploadImageAndGetDownloadUrl();
+  }
+
+  handleImageFromGallery() async{
+    Navigator.pop(context);
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: image.path,
+      maxHeight: 512,
+      maxWidth: 512,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+    );
+
+   var result = await FlutterImageCompress.compressAndGetFile(
+        croppedFile.path, croppedFile.path,
+        quality: 68,
+      );
+   
+    this.image = result;
+      
+    await uploadImageAndGetDownloadUrl();
+    // setState(() {
+    //   this.image = image;
+    // });
+  }
+
+
+handleDownloadUrl(String downUrl){
+   timestamp =  DateTime.now();
+                            // indexFirestore += 1;  
+                                                      
+                              var data = {
+                                'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                'receiverID' : widget.receiverUserID,
+                                'phoneNumber' : widget.receiverPhoneNumber,
+                                'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
+                                'mostRecentMessage' : 'Image'
+                              };
+
+                              var data2 = {
+                                'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                'receiverID' : loggedInUserID,
+                                'phoneNumber' : loggedInUserPhoneNumber,
+                                'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
+                                'mostRecentMessage' : 'Image'
+                                 
+                              };
+                             
+                             var messageData = {
+                               'timestamp' : formatDate(timestamp, [HH, ':', nn, ' ', am]).toString(),
+                               'senderID' : loggedInUserID,
+                               'message' : downUrl,
+                               'exactTime' : timestamp,
+                               'type' : 'image',
+                              //  'index' : indexFirestore
+                             };
+
+                            //  var indexData = {
+                            //    'index' : indexFirestore
+                            //  };
+                              
+                              activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).setData(data);
+                              activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).setData(data2);
+                              activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageData);
+                              activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageData);
+                                    
+
+
+                            
+                            
+                            downloadUrlBool = false;
+                            
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -151,12 +301,20 @@ else{
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                         hintText: 'Type your message',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(32),),),
+                        suffixIcon: GestureDetector(
+                          onTap: ()=>handleSelectImage(context),
+                          child:Icon(Icons.insert_photo, color: Colors.black45,)
+                          ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(32),),
+                        borderSide: BorderSide(color: Colors.grey[400]),
+                        ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(32),),
+                          borderSide: BorderSide(color: Colors.grey[400]),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(32),),                       
+                          borderRadius: BorderRadius.all(Radius.circular(32),),            
+                          borderSide: BorderSide(color: Colors.grey[400]),           
                         ),
                       ),
                     ),
@@ -177,15 +335,16 @@ else{
                                 'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
                                 'receiverID' : widget.receiverUserID,
                                 'phoneNumber' : widget.receiverPhoneNumber,
-                                'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl
+                                'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
+                                'mostRecentMessage' : message,
                               };
 
                               var data2 = {
                                 'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
                                 'receiverID' : loggedInUserID,
                                 'phoneNumber' : loggedInUserPhoneNumber,
-                                'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage
-                                 
+                                'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
+                                'mostRecentMessage' : message,
                               };
                              
                              var messageData = {
@@ -193,6 +352,7 @@ else{
                                'senderID' : loggedInUserID,
                                'message' : message,
                                'exactTime' : timestamp,
+                               'type' : 'text-message',
                               //  'index' : indexFirestore
                              };
 
@@ -209,6 +369,7 @@ else{
 
                             }  
                             
+                            downloadUrlBool = false;
                             },
                             //RawMaterialButton widget class is used for building buttons from scratch
                             child: Icon(
@@ -295,11 +456,13 @@ class MessagesStream extends StatelessWidget {
           final messageSenderID = message.data[
               'senderID']; //getting sender value from the map by using 'sender' key
           final String timestamp = message.data['timestamp'];
+          final String type = message.data['type'];
           final messageBubble = MessageBubble(
             senderID: messageSenderID,
             message: messageText,
             isMe: messageSenderID == loggedInUserID ? true : false,
             timestamp: timestamp,
+            type: type,
           );
           messageBubbles.add(messageBubble); //adds the Text widget to the list
 
@@ -320,8 +483,16 @@ class MessageBubble extends StatelessWidget {
   final String senderID;
   final bool isMe;
   final String timestamp;
-  MessageBubble({this.message, this.senderID, this.isMe, this.timestamp});
+  final String type;
+  MessageBubble({this.message, this.senderID, this.isMe, this.timestamp, this.type});
 
+
+  fullScreenImageAttachment(BuildContext context, String downloadLink){
+    if(downloadLink!=null){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => FullSizeImage(downloadUrl: downloadLink,)));
+    }
+  }
+ 
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -341,11 +512,29 @@ class MessageBubble extends StatelessWidget {
                     topRight: Radius.circular(30),
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30)),
-            color: isMe == true ? Colors.cyan[400] : Colors.purpleAccent[200],
-            child: Padding(
+            color: isMe == true ? Colors.blueGrey : Colors.lightBlue,
+            child:  (type == 'image') 
+                ? Container(
+                  padding: EdgeInsets.symmetric(vertical: 6.4, horizontal: 6.4),
+                  width: 169,
+                  height: 169,
+                  child: GestureDetector(
+                    onTap: ()=>fullScreenImageAttachment(context, message),
+                    child:ClipRRect(
+                          borderRadius: new BorderRadius.circular(22.0),
+                          child:  FadeInImage.assetNetwork(
+                            fadeInDuration: Duration(milliseconds: 200),
+                            fadeOutDuration: Duration(milliseconds: 200),
+                            placeholder: 'gifs/go-top.gif',
+                           image: message,
+                            fit: BoxFit.fill,
+            ),
+            ),
+            ),
+            )
+            : Padding(
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: 
-                  Text(
+              child:Text(
                     //assigning a newly made Text widget to the messageWidget
                     '$message   $timestamp',
                     textAlign: TextAlign.left,
@@ -353,7 +542,7 @@ class MessageBubble extends StatelessWidget {
                       color: Colors.white,
                       fontSize: 15,
                     ),
-                  ),
+              ), 
             ),
           ),
         ],

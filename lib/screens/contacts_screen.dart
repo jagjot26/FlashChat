@@ -12,6 +12,7 @@ import 'package:flash_chat/provider/auth.dart';
 import 'package:flash_chat/models/user.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 
 final usersRef = Firestore.instance.collection('users');
@@ -55,14 +56,17 @@ class _ContactsScreenState extends State<ContactsScreen> {
 fetchUsersRef() async{
     boolGetQSDocuments = false;  
     qs =  await usersRef.getDocuments();
-    boolGetQSDocuments = true;
+    setState(() {
+      boolGetQSDocuments = true;
+    });
+    
   }
 
   @override
   void initState() {
-    super.initState();
     setLoggedInUserPhoneNumber();
     fetchUsersRef();
+    super.initState(); 
 
   }
 
@@ -74,16 +78,18 @@ fetchUsersRef() async{
       future: ContactsService.getContacts(withThumbnails: false),
       builder: (BuildContext context, AsyncSnapshot snapshot){
            switch(snapshot.connectionState){
-             case ConnectionState.waiting:
-               return circularProgress();
+             case ConnectionState.waiting :
+               return shimmerEffect();  
              default:
-               if(snapshot.hasError)
+               if(boolGetQSDocuments == false || boolGetPhoneNumber == false)
+                 return Center(child: shimmerEffect());
+               else if(snapshot.hasError)
                  return Text('Error ${snapshot.error}');
                else
                  return createListView(context, snapshot);
            }
       }
-    );
+    ); 
   }
 
 bool displayContact = false;
@@ -101,9 +107,6 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
        return ListView.builder(
       itemCount: contactsList.length,
         itemBuilder: (BuildContext context, int index){
-          if(boolGetQSDocuments==false){
-            return circularProgress();
-          }
         String downloadUrl = 'd';  
         Map<String,String> getUserIDs = {'randomName' : 'we23e232'};
         Map<String,String> getUserPhoneNumbers = {'few' : 'wewe'};
@@ -128,7 +131,9 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
             child: ListTile(
             leading: (downloadUrl==null) ? CircleAvatar(radius: 21, child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 21, child: ClipOval(
   child: FadeInImage.assetNetwork(
-            placeholder: 'gifs/760.gif',
+            fadeInDuration: Duration(milliseconds: 150),
+            fadeOutDuration: Duration(milliseconds: 150),
+            placeholder: 'gifs/ld9.gif',
             image: downloadUrl,
             fit: BoxFit.fill,
           ),
@@ -200,36 +205,36 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
         ],
       ),
       body: SafeArea(
-        child: (_iteratorHasData == false) ? emptyContacts(context) : handleContacts(context),
+        child: (boolGetQSDocuments == false || boolGetPhoneNumber == false) ? Center(child: shimmerEffect()) : handleContacts(context),
       ),
     );
   }
 }
 
 
-Column emptyContacts(BuildContext context){
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: <Widget>[
-      SizedBox(
-        height: MediaQuery.of(context).size.height*0.07,
-      ),
-      Text('So lonely!', textAlign: TextAlign.center, style: TextStyle(fontSize: 40, fontWeight: FontWeight.w500),),
-      SizedBox(
-        height: MediaQuery.of(context).size.height*0.05,
-      ),
-      Image.asset('images/empty.png'),
-      SizedBox(
-        height: MediaQuery.of(context).size.height*0.04,
-      ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 25),
-          child: Text("Looks like this is your first time using the app. Press the '⟳' button to update your contacts list",
-            textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-          ),),),
-    ],
-  );
-}
+// Column emptyContacts(BuildContext context){
+//   return Column(
+//     mainAxisAlignment: MainAxisAlignment.start,
+//     children: <Widget>[
+//       SizedBox(
+//         height: MediaQuery.of(context).size.height*0.07,
+//       ),
+//       Text('So lonely!', textAlign: TextAlign.center, style: TextStyle(fontSize: 40, fontWeight: FontWeight.w500),),
+//       SizedBox(
+//         height: MediaQuery.of(context).size.height*0.05,
+//       ),
+//       Image.asset('images/empty.png'),
+//       SizedBox(
+//         height: MediaQuery.of(context).size.height*0.04,
+//       ),
+//       Padding(
+//         padding: EdgeInsets.symmetric(horizontal: 25),
+//           child: Text("Looks like this is your first time using the app. Press the '⟳' button to update your contacts list",
+//             textAlign: TextAlign.center,
+//           style: TextStyle(
+//             fontSize: 18,
+//             fontWeight: FontWeight.w400,
+//           ),),),
+//     ],
+//   );
+// }

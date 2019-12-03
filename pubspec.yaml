@@ -7,6 +7,8 @@ environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
 
 dependencies:
+  intl: ^0.16.0
+  shimmer: ^1.0.1
   flutter_image_compress: ^0.6.3
   image_cropper: ^1.1.0
   date_format: ^1.0.6
