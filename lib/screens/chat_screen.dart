@@ -251,8 +251,8 @@ handleDownloadUrl(String downUrl){
           builder: (BuildContext context){
           return AppBar(
           leading: Padding(
-            padding: EdgeInsets.all(8.5),
-            child : GestureDetector(onTap: ()=> fullScreenImage(context) ,child : (widget.imageDownloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
+            child : GestureDetector(onTap: ()=> fullScreenImage(context) ,child : (widget.imageDownloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 2, child: ClipOval(
   child: FadeInImage.assetNetwork(
               placeholder: 'gifs/760.gif',
               image: widget.imageDownloadUrl,
@@ -264,12 +264,6 @@ handleDownloadUrl(String downUrl){
              
           ),
           title: (widget.receiverName == 'defaultName') ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left) : Text(widget.receiverName, textAlign: TextAlign.left),
-          actions: <Widget>[
-            Padding(
-            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.038),
-            child: Icon(Icons.more_vert,color: Colors.white,),
-          ),
-          ],
         );
         }
         ),

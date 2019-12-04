@@ -190,9 +190,8 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('Select contact', textAlign: TextAlign.left,),
-            Text(_numberOfContacts, textAlign: TextAlign.left, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400,),),
-          ],
+            Text('Select contact', textAlign: TextAlign.center,),
+            ],
         ),
         actions: <Widget>[
           GestureDetector(

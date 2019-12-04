@@ -56,7 +56,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
       await PermissionHandler().requestPermissions([PermissionGroup.contacts]); //ask for permission
       Navigator.pushNamed(context, ContactsScreen.id);
     }
-
   }
 
 void setLoggedInUserID() async{
@@ -97,6 +96,70 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+  accountName: Text("Ashish Rawat"),
+  decoration: BoxDecoration(
+    color: Colors.blueAccent,
+  ),
+  accountEmail: Text("ashishrawat2911@gmail.com"),
+  currentAccountPicture: CircleAvatar(
+        backgroundColor:
+        Theme.of(context).platform == TargetPlatform.iOS
+            ? Colors.lightBlue
+            : Colors.white,
+        child: Text(
+        "A",
+        style: TextStyle(fontSize: 40.0),
+        ),
+     ),
+    ),
+      ListTile(
+        leading: Icon(Icons.person),
+        title: Text('Edit Profile',),
+        onTap: () {
+          // Update the state of the app.
+          // ...
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.contacts),
+        title: Text('Contacts'),
+        onTap: (){
+          Navigator.of(context).pop();
+          handleContactsButton(context);
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.insert_drive_file),
+        title: Text('Privacy Policy'),
+        onTap: () {
+          // Update the state of the app.
+          // ...
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.people),
+        title: Text('Reach Us'),
+        onTap: () {
+          // Update the state of the app.
+          // ...
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.info),
+        title: Text('About'),
+        onTap: () {
+          // Update the state of the app.
+          // ...
+        },
+      ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: Text('FlashChat'),
