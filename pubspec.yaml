@@ -41,14 +41,24 @@ dev_dependencies:
 
 flutter:
   fonts:
+    - family: Pacifico
+      fonts:
+       - asset: fonts/Pacifico-Regular.ttf
+       
+    - family: Source Sans Pro
+      fonts:
+       - asset: fonts/SourceSansPro-Regular.ttf
+   
+
     - family: Montserrat
       fonts:
-        - asset: fonts/Montserrat-Regular.ttf
-          weight: 700
+       - asset: fonts/Montserrat-Regular.ttf
+         weight: 700
+
     - family: Manjari
       fonts:
-        - asset: fonts/Manjari-Regular.ttf
-          weight: 700
+       - asset: fonts/Manjari-Regular.ttf
+         weight: 700
   uses-material-design: true
 
   assets:

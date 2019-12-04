@@ -10,7 +10,8 @@ import 'dart:io';
 
 final usersRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
-
+QuerySnapshot qs;
+bool userExistsInFirebase = false;
 
 class Auth with ChangeNotifier {
   User presentUser;
@@ -18,11 +19,12 @@ class Auth with ChangeNotifier {
   FirebaseUser user;
   String loggedInUserIDSharedPref;
   String loggedInUserContactNumber;
+  String loggedInUserName;
 
   bool get isAuth{
     return uidSharedPref!=null;
   }
-
+ 
 
   Future<bool> logIn(String smsCode, String verificationId, String phoneNumber) async {
     try {
@@ -57,6 +59,14 @@ class Auth with ChangeNotifier {
 
     final prefs3 = await SharedPreferences.getInstance();
     prefs3.setString("loggedInUserImage", downloadUrl);
+
+    final prefs4 = await SharedPreferences.getInstance();
+    prefs4.setString("loggedInUserName", displayName);
+
+    final prefs6 = await SharedPreferences.getInstance();
+    prefs6.setString("loggedInUserBio", "Hello there, I'm available for chat");
+
+
       // 2) if the user doesn't exist, then we want to take them to the create account page
 //      final username = await Navigator.push(
 //          context, MaterialPageRoute(builder: (context) => CreateAccount()));
@@ -65,7 +75,7 @@ class Auth with ChangeNotifier {
       usersRef.document(user.uid).setData({
         "id": user.uid,
         "displayName": displayName,
-        "bio": "",
+        "bio": "Hello there, I'm available for chat",
         "phoneNumber": phoneNumber,
         "timestamp": timestamp,
         "imageDownloadUrl" : downloadUrl
@@ -74,14 +84,27 @@ class Auth with ChangeNotifier {
       
       doc = await usersRef.document(user.uid).get();
     
-
+    
+    qs =  await usersRef.getDocuments();
+    var listOfDocuments = qs.documents;
+    for(var dc in listOfDocuments){
+     if(dc["displayName"] == displayName || dc["phoneNumber"]==phoneNumber)
+     {
+       userExistsInFirebase = true;
+       break;
+     }     
+    }
+    final prefs5 = await SharedPreferences.getInstance();
+    if(userExistsInFirebase == true){
+      prefs5.setString("recentlyLoggedInUser","exists");
+    }
     presentUser = User.fromDocument(doc);
   }
 
 
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('uid')) {
+    if (!prefs.containsKey('recentlyLoggedInUser')) {
       return false;
     }
     uidSharedPref = prefs.getString("uid");

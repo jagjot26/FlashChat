@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/chat_screen.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'contacts_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -11,6 +12,10 @@ import 'dart:async';
 import 'package:flash_chat/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:flash_chat/Drawer screens/profile_edit.dart';
+import 'package:flash_chat/Drawer screens/privacypolicy.dart';
+import 'package:flash_chat/Drawer screens/about.dart';
+import 'package:flash_chat/Drawer screens/reach_us.dart';
 
 String loggedInUserID;
 User loggedInUser;
@@ -44,6 +49,21 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
 
 
+
+
+String loggedInUserPhoneNumber;
+String loggedInUserImgUrl;
+bool getLoggedInUserIDBool= false;
+String loggedInUserName;
+String loggedInUserBio;
+setLoggedInUserInfo() async{
+   final prefs = await SharedPreferences.getInstance();
+   loggedInUserPhoneNumber = prefs.getString("loggedInUserPhoneNumber");
+   loggedInUserImgUrl = prefs.getString("loggedInUserImage");
+   loggedInUserName = prefs.getString("loggedInUserName");
+   loggedInUserBio = prefs.getString("loggedInUserBio");
+   
+}
 
 
   handleContactsButton(BuildContext context) async {
@@ -89,6 +109,7 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
 @override
   void initState() {
     super.initState();
+    setLoggedInUserInfo();
     getContacts();
    setLoggedInUserID();
   }
@@ -101,28 +122,29 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
           padding: EdgeInsets.zero,
           children: <Widget>[
             UserAccountsDrawerHeader(
-  accountName: Text("Ashish Rawat"),
+  accountName: loggedInUserName==null ? Text(" ") :Text(loggedInUserName),
   decoration: BoxDecoration(
     color: Colors.blueAccent,
   ),
-  accountEmail: Text("ashishrawat2911@gmail.com"),
-  currentAccountPicture: CircleAvatar(
-        backgroundColor:
-        Theme.of(context).platform == TargetPlatform.iOS
-            ? Colors.lightBlue
-            : Colors.white,
-        child: Text(
-        "A",
-        style: TextStyle(fontSize: 40.0),
-        ),
-     ),
+  accountEmail: loggedInUserPhoneNumber==null ? Text(" ") : Text(loggedInUserPhoneNumber),
+  currentAccountPicture: (loggedInUserImgUrl == 'NoImage' || loggedInUserImgUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
+  child: FadeInImage.assetNetwork(
+              fadeInDuration: Duration(milliseconds: 200),
+              fadeOutDuration: Duration(milliseconds: 200),
+              placeholder: 'gifs/ld9.gif',
+              image: this.loggedInUserImgUrl,
+              fit: BoxFit.fill,
+            ),
+),
+),
     ),
       ListTile(
         leading: Icon(Icons.person),
         title: Text('Edit Profile',),
         onTap: () {
-          // Update the state of the app.
-          // ...
+          Navigator.of(context).pop();
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEdit(profileImageUrl: loggedInUserImgUrl, userName: loggedInUserName, about: loggedInUserBio, phoneNumber: loggedInUserPhoneNumber,)));
+          
         },
       ),
       ListTile(

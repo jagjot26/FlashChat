@@ -14,9 +14,9 @@ import 'models/contacts_list.dart';
 import 'screens/otp_screen.dart';
 import 'screens/tempScreen.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
+import 'Drawer screens/profile_edit.dart';
 
-//VERY IMPORTANTTTTTTTTTTTTTTTTTTT: MULTIPLE VERTICALLY STACKED CIRCLES ERROR ON CONTACT SCREEN
-//handle landscape orientation, because it's literally in shambles rn
+
 // handle invalid verification code error
 //handle image upload to Firestore along with other items as a document after compression and conversion to string
 //handle back phone's button press on screens
@@ -24,7 +24,7 @@ import 'package:flash_chat/screens/chat_screen.dart';
 //can't resolve GradleException error in app level build.gradle
 //divide login stuff and adding user stuff. add login stuff back to create account or something
 
-//CONTACT'SCREEN NOT UPDATING AFTER ONE INITIAL REFRESH
+
 //on CONTACT's SCREEN, PHONE NUMBERS W/O +91 SHOULD ALSO BE DISPLAYED
 
 //CHECK IF USER IS ONLINE AND DISPLAY 'online' BELOW THEIR NAME
@@ -150,53 +150,24 @@ class FlashChat extends StatelessWidget {
 //);
 
 
+// auth.isAuth
+//                 ? ChatListScreen()
+//                : FutureBuilder(
+//                 future: auth.tryAutoLogin(),
+//                 builder: (ctx, authResultSnapshot) =>
+//                 authResultSnapshot.connectionState ==
+//                 ConnectionState.waiting
+//                ? SplashScreen()
+//                 : CreateAccount(),
+//                 ),
 
 // auth.isAuth
-// ? ChatScreen()
-//    : FutureBuilder(
-// future: auth.tryAutoLogin(),
-// builder: (ctx, authResultSnapshot) =>
-// authResultSnapshot.connectionState ==
-// ConnectionState.waiting
-// ? SplashScreen()
-//    : CreateAccount(),
-// ),
-
-
-
-//auth.isAuth
-//? ChatScreen()
-//    : FutureBuilder(
-//future: auth.tryAutoLogin(),
-//builder: (ctx, authResultSnapshot) =>
-//authResultSnapshot.connectionState ==
-//ConnectionState.waiting
-//? SplashScreen()
-//    : CreateAccount(),
-//),
-
-
-
-
-//auth.isAuth
-//? ChatScreen()
-//    : FutureBuilder(
-//future: auth.tryAutoLogin(),
-//builder: (ctx, authResultSnapshot) =>
-//authResultSnapshot.connectionState ==
-//ConnectionState.waiting
-//? SplashScreen()
-//    : CreateAccount(),
-//),
-
-
-//auth.isAuth
-//? ChatScreen()
-//    : FutureBuilder(
-//future: auth.tryAutoLogin(),
-//builder: (ctx, authResultSnapshot) =>
-//authResultSnapshot.connectionState ==
-//ConnectionState.waiting
-//? SplashScreen()
-//    : CreateAccount(),
-//),
+//                 ? ChatListScreen()
+//                : FutureBuilder(
+//                 future: auth.tryAutoLogin(),
+//                 builder: (ctx, authResultSnapshot) =>
+//                 authResultSnapshot.connectionState ==
+//                 ConnectionState.waiting
+//                ? SplashScreen()
+//                 : CreateAccount(),
+//                 ),
