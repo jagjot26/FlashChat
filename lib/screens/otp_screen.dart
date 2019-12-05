@@ -97,7 +97,7 @@ class _OTPScreenState extends State<OTPScreen> {
     }
     else if(this.boolOTP == true){
       setState(() {
-        this.errorMessage = 'OTP code mismatch. Please try entering it again';
+        this.errorMessage = 'There was some error signing you in. Either try re-entering the OTP carefully or re-run the app and enter your phone number again';
         this.hasError = true;
       });
     }

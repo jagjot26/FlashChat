@@ -302,7 +302,7 @@ handleEditBio(BuildContext ctx){
             ),
 ),
 )
-                 :  (widget.profileImageUrl == 'NoImage') ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: MediaQuery.of(context).size.width*0.18, child: ClipOval(
+                 :  (widget.profileImageUrl == 'NoImage' || widget.profileImageUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'), radius: MediaQuery.of(context).size.width*0.18,) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: MediaQuery.of(context).size.width*0.18, child: ClipOval(
   child: FadeInImage.assetNetwork(
               fadeInDuration: Duration(milliseconds: 200),
               fadeOutDuration: Duration(milliseconds: 200),

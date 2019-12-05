@@ -195,7 +195,7 @@ uploadImageAndGetDownloadUrl() async{
 
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height*0.084,
+                  height: MediaQuery.of(context).size.height*0.044,
                 ),
                 Flexible(
                   fit: FlexFit.loose,

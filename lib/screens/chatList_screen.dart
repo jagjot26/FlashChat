@@ -213,29 +213,30 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
   }
 }
 
-openChatScreen(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl){
-Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl,)));
+openChatScreen(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio){
+Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio,)));
 }
 
-openChatScreenFromSearch(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl){
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl,)));
+openChatScreenFromSearch(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio){
+Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio,)));
 }
 
 String downloadUrlFinal;
-
+String bioOfUser;
 class MessagedContactsWidget extends StatelessWidget {
   final String contactName;
   final String phoneNumber;
   final String userID;
   final String downloadUrl;
   final String mostRecentMessage;
+  final String bio;
 
-  MessagedContactsWidget({this.contactName = 'defaultName', this.phoneNumber, this.userID, this.downloadUrl, this.mostRecentMessage});
+  MessagedContactsWidget({this.contactName = 'defaultName', this.phoneNumber, this.userID, this.downloadUrl, this.mostRecentMessage, this.bio});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-          onTap: ()=> openChatScreen(contactName, phoneNumber, userID, context, this.downloadUrl),
+          onTap: ()=> openChatScreen(contactName, phoneNumber, userID, context, this.downloadUrl, this.bio),
           child: Column(
         children: <Widget>[
           ListTile(
@@ -307,6 +308,7 @@ class ChatList extends StatelessWidget {
              if(dc["phoneNumber"]==userPhoneNumber)
                {
                downloadUrlFinal = dc["imageDownloadUrl"];  
+               bioOfUser = dc["bio"];
                }     
               }
           final String receiverID = users.data['receiverID'];
@@ -314,7 +316,7 @@ class ChatList extends StatelessWidget {
           for(int index = 0; index < contactsList.length; index++){
             phoneNumberAtIndex = (contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value;
             String trimmedPhoneNumber = phoneNumberAtIndex.split(" ").join("");
-            if(userPhoneNumber == trimmedPhoneNumber){
+            if(userPhoneNumber == trimmedPhoneNumber || userPhoneNumber.substring(3) == trimmedPhoneNumber){
               userName = contactsList[index].displayName;
                if(contactedUserNames.length!=0){
                  counter = 0;
@@ -326,12 +328,12 @@ class ChatList extends StatelessWidget {
                 }
                 if(counter==0){
                  contactedUserNames.add(userName);
-                 userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText];
+                 userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText, bioOfUser];
                 }
              }
              else{
               contactedUserNames.add(userName);
-              userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText];
+              userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText, bioOfUser];
              }
               break;
             }
@@ -343,10 +345,10 @@ class ChatList extends StatelessWidget {
         isUserNameActuallyNumber = isNumeric(userName);
            var messagedContact;
          if(isUserNameActuallyNumber == true){
-            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal,mostRecentMessage: mostRecentText,);
+            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal,mostRecentMessage: mostRecentText, bio: bioOfUser,);
          }
          else{
-            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal, mostRecentMessage: mostRecentText,);
+            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal, mostRecentMessage: mostRecentText, bio: bioOfUser,);
          }
 
           
@@ -415,7 +417,7 @@ class SearchUsers extends SearchDelegate<String>{
    return ListView.builder(
      itemCount: suggestionsList.length,
      itemBuilder: (context,index) => ListTile(
-       onTap: ()=> openChatScreenFromSearch(suggestionsList[index], userInfoForSearch[suggestionsList[index]][0], userInfoForSearch[suggestionsList[index]][2], context, userInfoForSearch[suggestionsList[index]][1])  ,
+       onTap: ()=> openChatScreenFromSearch(suggestionsList[index], userInfoForSearch[suggestionsList[index]][0], userInfoForSearch[suggestionsList[index]][2], context, userInfoForSearch[suggestionsList[index]][1], userInfoForSearch[suggestionsList[index]][4])  ,
        leading: (userInfoForSearch[suggestionsList[index]][1] == 'NoImage') ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
   child: FadeInImage.assetNetwork(
               fadeInDuration: Duration(milliseconds: 200),

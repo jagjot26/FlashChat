@@ -17,6 +17,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:flash_chat/profileEditForChatScreen.dart';
 
 String loggedInUserID;
 String loggedInUserPhoneNumber;
@@ -36,8 +37,9 @@ final String receiverName;
 final receiverUserID;
 final String receiverPhoneNumber;
 final String imageDownloadUrl;
+final String receiverBio;
 
-ChatScreen({this.receiverName, this.receiverUserID, this.receiverPhoneNumber, this.imageDownloadUrl});
+ChatScreen({this.receiverName, this.receiverUserID, this.receiverPhoneNumber, this.imageDownloadUrl, this.receiverBio});
 
 
   @override
@@ -249,22 +251,28 @@ handleDownloadUrl(String downUrl){
               preferredSize: Size.fromHeight(56),
               child: Builder(
           builder: (BuildContext context){
-          return AppBar(
-          leading: Padding(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
-            child : GestureDetector(onTap: ()=> fullScreenImage(context) ,child : (widget.imageDownloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 2, child: ClipOval(
+          return GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEditForChatScreen(profileImageUrl: widget.imageDownloadUrl, userName: widget.receiverName, about: widget.receiverBio, phoneNumber: widget.receiverPhoneNumber,)));
+                      },
+                      child: AppBar(
+            leading: Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
+              child : (widget.imageDownloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 2, child: ClipOval(
   child: FadeInImage.assetNetwork(
-              placeholder: 'gifs/760.gif',
-              image: widget.imageDownloadUrl,
-              fit: BoxFit.fill,
+                placeholder: 'gifs/760.gif',
+                image: widget.imageDownloadUrl,
+                fit: BoxFit.fill,
+              ),
+),
+),
+               
             ),
-),
-) ,
-),
-             
-          ),
-          title: (widget.receiverName == 'defaultName') ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left) : Text(widget.receiverName, textAlign: TextAlign.left),
-        );
+            title: (widget.receiverName == 'defaultName') 
+            ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left)
+             : Text(widget.receiverName, textAlign: TextAlign.left),
+        ),
+          );
         }
         ),
       ),
