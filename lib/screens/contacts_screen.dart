@@ -114,7 +114,8 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
         this.displayContact = false;
         var listOfDocuments = qs.documents;
     listOfDocuments?.forEach((doc){
-     if(doc["phoneNumber"] == phoneNumberAtIndex.split(" ").join("") && doc["phoneNumber"] != loggedInUserPhoneNumber.split(" ").join("")) 
+     if((doc["phoneNumber"] == phoneNumberAtIndex.split(" ").join("") && doc["phoneNumber"] != loggedInUserPhoneNumber.split(" ").join("")) 
+       ||  (doc["phoneNumber"].substring(3) == phoneNumberAtIndex.split(" ").join("") && doc["phoneNumber"].substring(3) != loggedInUserPhoneNumber.split(" ").join("")))
      {
        this.displayContact = true;
        getUserIDs[contactsList[index].displayName] = doc["id"]; 
@@ -142,7 +143,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(contactsList[index].displayName, textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.w500),),
-                Text((contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value),
+                Text((contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value.split(" ").join("")),
      
               ],
             ),

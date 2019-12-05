@@ -131,7 +131,7 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
   child: FadeInImage.assetNetwork(
               fadeInDuration: Duration(milliseconds: 200),
               fadeOutDuration: Duration(milliseconds: 200),
-              placeholder: 'gifs/ld9.gif',
+              placeholder: 'gifs/496.gif',
               image: this.loggedInUserImgUrl,
               fit: BoxFit.fill,
             ),
@@ -221,6 +221,7 @@ openChatScreenFromSearch(String name, String phoneNumber, String userID, BuildCo
 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl,)));
 }
 
+String downloadUrlFinal;
 
 class MessagedContactsWidget extends StatelessWidget {
   final String contactName;
@@ -289,13 +290,25 @@ class ChatList extends StatelessWidget {
         if(!snapshot.hasData){
           return Container();
         }
-        
-        
-        final messagedUsers = snapshot.data.documents;
+           
+           return StreamBuilder(
+             stream: Firestore.instance.collection('users').snapshots(),
+             builder: (context, snapshot2){
+               if(!snapshot2.hasData){
+              return Container();
+                }
+
+               final messagedUsers = snapshot.data.documents;
         List<MessagedContactsWidget> listOfMessagedContactsWidget = [];
           for(var users in messagedUsers){
           final String userPhoneNumber = users.data['phoneNumber'];
-          final String downloadUrl = users.data['image'];
+          var listOfDocuments = snapshot2.data.documents;
+              for(var dc in listOfDocuments){
+             if(dc["phoneNumber"]==userPhoneNumber)
+               {
+               downloadUrlFinal = dc["imageDownloadUrl"];  
+               }     
+              }
           final String receiverID = users.data['receiverID'];
           final String mostRecentText = users.data['mostRecentMessage'];
           for(int index = 0; index < contactsList.length; index++){
@@ -313,12 +326,12 @@ class ChatList extends StatelessWidget {
                 }
                 if(counter==0){
                  contactedUserNames.add(userName);
-                 userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrl, receiverID, mostRecentText];
+                 userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText];
                 }
              }
              else{
               contactedUserNames.add(userName);
-              userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrl, receiverID, mostRecentText];
+              userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText];
              }
               break;
             }
@@ -330,10 +343,10 @@ class ChatList extends StatelessWidget {
         isUserNameActuallyNumber = isNumeric(userName);
            var messagedContact;
          if(isUserNameActuallyNumber == true){
-            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl,mostRecentMessage: mostRecentText,);
+            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal,mostRecentMessage: mostRecentText,);
          }
          else{
-            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl, mostRecentMessage: mostRecentText,);
+            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal, mostRecentMessage: mostRecentText,);
          }
 
           
@@ -348,6 +361,12 @@ class ChatList extends StatelessWidget {
         ),
               ),
       );
+
+              
+             },
+           );
+        
+        
         
       },      
 
@@ -445,43 +464,83 @@ class SearchUsers extends SearchDelegate<String>{
 
 
 
-// GestureDetector(
-//           onTap: ()=> openChatScreen(contactName, phoneNumber, userID, context, this.downloadUrl),
-//           child: Column(
-//         children: <Widget>[
-//           ListTile(
-//             leading: (this.downloadUrl == 'NoImage') ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
-//   child: FadeInImage.assetNetwork(
-//               fadeInDuration: Duration(milliseconds: 200),
-//               fadeOutDuration: Duration(milliseconds: 200),
-//               placeholder: 'gifs/ld9.gif',
-//               image: this.downloadUrl,
-//               fit: BoxFit.fill,
-//             ),
-// ),
-// ),
-//             title: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: <Widget>[  
-//                 (contactName == 'defaultName') ? Text(phoneNumber, style: TextStyle(fontSize: 20), textAlign: TextAlign.start,) : Text(contactName, style: TextStyle(fontSize: 20),),
-//                 SizedBox(
-//                   height: 3,
-//                 ),
-//                 Text(mostRecentMessage, 
-//                      style: TextStyle(fontSize: 15, color: Colors.black54,),
-//                      textAlign: TextAlign.start,
-//                      ),
-//               ],
-//             ),
-//           ),  
-//           Container(
-//             width: MediaQuery.of(context).size.width*0.9,
-//             child: Divider(
-//               height: 13,
-//               thickness: 0.4,
-//               indent: MediaQuery.of(context).size.width*0.14,
-//             ),
-//           ),
-//         ],
-//       ),
+
+
+
+
+
+
+
+
+
+
+// return StreamBuilder(
+//       stream: activeUsersRef.document(loggedInUserID).collection('messagedUsers').orderBy('timestamp', descending:false).snapshots(),
+//       builder: (context, snapshot){
+
+//         if(!snapshot.hasData){
+//           return Container();
+//         }
+        
+        
+//         final messagedUsers = snapshot.data.documents;
+//         List<MessagedContactsWidget> listOfMessagedContactsWidget = [];
+//           for(var users in messagedUsers){
+//           final String userPhoneNumber = users.data['phoneNumber'];
+//           final String downloadUrl = users.data['image'];
+//           final String receiverID = users.data['receiverID'];
+//           final String mostRecentText = users.data['mostRecentMessage'];
+//           for(int index = 0; index < contactsList.length; index++){
+//             phoneNumberAtIndex = (contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value;
+//             String trimmedPhoneNumber = phoneNumberAtIndex.split(" ").join("");
+//             if(userPhoneNumber == trimmedPhoneNumber){
+//               userName = contactsList[index].displayName;
+//                if(contactedUserNames.length!=0){
+//                  counter = 0;
+//                 for(int i=0;i<contactedUserNames.length;i++){
+//                  if(contactedUserNames[i]==userName){
+//                    counter++;
+//                   break;
+//                  }               
+//                 }
+//                 if(counter==0){
+//                  contactedUserNames.add(userName);
+//                  userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrl, receiverID, mostRecentText];
+//                 }
+//              }
+//              else{
+//               contactedUserNames.add(userName);
+//               userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrl, receiverID, mostRecentText];
+//              }
+//               break;
+//             }
+//             else{
+//               userName = userPhoneNumber;
+//             }
+//           }
+          
+//         isUserNameActuallyNumber = isNumeric(userName);
+//            var messagedContact;
+//          if(isUserNameActuallyNumber == true){
+//             messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl,mostRecentMessage: mostRecentText,);
+//          }
+//          else{
+//             messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl, mostRecentMessage: mostRecentText,);
+//          }
+
+          
+     
+//       listOfMessagedContactsWidget.add(messagedContact);
+//       }
+      
+//       return Expanded(
+//               child: SingleChildScrollView(
+//                 child: Column(
+//           children: listOfMessagedContactsWidget,
+//         ),
+//               ),
+//       );
+        
+//       },      
+
 //     );
