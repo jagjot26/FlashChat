@@ -6,12 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/models/user.dart';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/material.dart';
 
 
 final usersRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
 QuerySnapshot qs;
 bool userExistsInFirebase = false;
+ final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
 class Auth with ChangeNotifier {
   User presentUser;
@@ -26,28 +29,52 @@ class Auth with ChangeNotifier {
   }
  
 
-  Future<bool> logIn(String smsCode, String verificationId, String phoneNumber) async {
-    try {
-      final AuthCredential credential = PhoneAuthProvider.getCredential(
-          verificationId: verificationId, smsCode: smsCode);
-      user =
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      final FirebaseUser currentUser = await FirebaseAuth.instance
-          .currentUser();
-      assert(user.uid == currentUser.uid);
+//  void onFormSubmitted() async {
+//     AuthCredential _authCredential = PhoneAuthProvider.getCredential(
+//         verificationId: verificationId, smsCode: smscode);
+
+//     _firebaseAuth
+//         .signInWithCredential(_authCredential)
+//         .then((AuthResult value) {
+//       if (value.user != null) {
+//         // Handle loogged in state
+//         print(value.user.phoneNumber);
+//         print(value.user.uid);
+        
+      
+//       } else {
+//         Fluttertoast.showToast(msg: "Error validating OTP, try again",  textColor: Colors.red);
+//       }
+//     }).catchError((error) {
+//       Fluttertoast.showToast(msg: "Something went wrong",  textColor: Colors.red);
+//     });
+//     final prefs = await SharedPreferences.getInstance();
+//       prefs.setString('uid', user.uid);
+//       notifyListeners();
+//  }
+
+//   Future<bool> logIn(String smsCode, String verificationId, String phoneNumber) async {
+//     try {
+//       final AuthCredential credential = PhoneAuthProvider.getCredential(
+//           verificationId: verificationId, smsCode: smsCode);
+//       user =
+//       await FirebaseAuth.instance.signInWithCredential(credential);
+//       final FirebaseUser currentUser = await FirebaseAuth.instance
+//           .currentUser();
+//       assert(user.uid == currentUser.uid);
 
 
-      print('signInWithPhoneNumber succeeded: $user');
-//      createUserInFireStore(user, phoneNumber, displayName);
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('uid', user.uid);
-      notifyListeners();
-      return false;
-    }catch(e){
-      print(e);
-      return true;
-    }
-  }
+//       print('signInWithPhoneNumber succeeded: $user');
+// //      createUserInFireStore(user, phoneNumber, displayName);
+//       final prefs = await SharedPreferences.getInstance();
+//       prefs.setString('uid', user.uid);
+//       notifyListeners();
+//       return false;
+//     }catch(e){
+//       print(e);
+//       return true;
+//     }
+//   }
 
 
   createUserInFireStore(FirebaseUser user, String phoneNumber, String displayName, String downloadUrl) async {

@@ -28,6 +28,7 @@ bool isUserNameActuallyNumber;
  List<Contact> contactsList;
  String phoneNumberAtIndex;
  String userName;
+ bool getSharedPrefInfo = false;
 
 
 
@@ -56,12 +57,14 @@ String loggedInUserImgUrl;
 bool getLoggedInUserIDBool= false;
 String loggedInUserName;
 String loggedInUserBio;
+
 setLoggedInUserInfo() async{
    final prefs = await SharedPreferences.getInstance();
    loggedInUserPhoneNumber = prefs.getString("loggedInUserPhoneNumber");
    loggedInUserImgUrl = prefs.getString("loggedInUserImage");
    loggedInUserName = prefs.getString("loggedInUserName");
    loggedInUserBio = prefs.getString("loggedInUserBio");
+   getSharedPrefInfo = true;
    
 }
 
@@ -240,7 +243,7 @@ class MessagedContactsWidget extends StatelessWidget {
           child: Column(
         children: <Widget>[
           ListTile(
-            leading: (this.downloadUrl == 'NoImage') ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
+            leading: (this.downloadUrl == 'NoImage' || this.downloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
   child: FadeInImage.assetNetwork(
               fadeInDuration: Duration(milliseconds: 200),
               fadeOutDuration: Duration(milliseconds: 200),
@@ -288,14 +291,14 @@ class ChatList extends StatelessWidget {
       stream: activeUsersRef.document(loggedInUserID).collection('messagedUsers').orderBy('timestamp', descending:false).snapshots(),
       builder: (context, snapshot){
 
-        if(!snapshot.hasData){
+        if(!snapshot.hasData || gotAsyncInfo == false || gotContactsInfo == false || getSharedPrefInfo == false){
           return Container();
         }
            
            return StreamBuilder(
              stream: Firestore.instance.collection('users').snapshots(),
              builder: (context, snapshot2){
-               if(!snapshot2.hasData){
+               if(!snapshot2.hasData || gotAsyncInfo == false || gotContactsInfo == false || getSharedPrefInfo == false){
               return Container();
                 }
 
@@ -312,7 +315,10 @@ class ChatList extends StatelessWidget {
                }     
               }
           final String receiverID = users.data['receiverID'];
-          final String mostRecentText = users.data['mostRecentMessage'];
+          String mostRecentText = users.data['mostRecentMessage'];
+          if(mostRecentText.length>42){
+            mostRecentText = mostRecentText.substring(0,42);
+          }
           for(int index = 0; index < contactsList.length; index++){
             phoneNumberAtIndex = (contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value;
             String trimmedPhoneNumber = phoneNumberAtIndex.split(" ").join("");
@@ -418,7 +424,7 @@ class SearchUsers extends SearchDelegate<String>{
      itemCount: suggestionsList.length,
      itemBuilder: (context,index) => ListTile(
        onTap: ()=> openChatScreenFromSearch(suggestionsList[index], userInfoForSearch[suggestionsList[index]][0], userInfoForSearch[suggestionsList[index]][2], context, userInfoForSearch[suggestionsList[index]][1], userInfoForSearch[suggestionsList[index]][4])  ,
-       leading: (userInfoForSearch[suggestionsList[index]][1] == 'NoImage') ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
+       leading: (userInfoForSearch[suggestionsList[index]][1] == 'NoImage' || userInfoForSearch[suggestionsList[index]][1]==null) ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
   child: FadeInImage.assetNetwork(
               fadeInDuration: Duration(milliseconds: 200),
               fadeOutDuration: Duration(milliseconds: 200),

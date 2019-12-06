@@ -200,7 +200,7 @@ handleDownloadUrl(String downUrl){
                             // indexFirestore += 1;  
                                                       
                               var data = {
-                                'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                'time' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
                                 'receiverID' : widget.receiverUserID,
                                 'phoneNumber' : widget.receiverPhoneNumber,
                                 'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
@@ -217,7 +217,7 @@ handleDownloadUrl(String downUrl){
                               };
                              
                              var messageData = {
-                               'timestamp' : formatDate(timestamp, [HH, ':', nn, ' ', am]).toString(),
+                               'timestamp' : timestamp,
                                'senderID' : loggedInUserID,
                                'message' : downUrl,
                                'exactTime' : timestamp,
@@ -350,7 +350,7 @@ handleDownloadUrl(String downUrl){
                               };
                              
                              var messageData = {
-                               'timestamp' : formatDate(timestamp, [HH, ':', nn, ' ', am]).toString(),
+                               'timestamp' : timestamp,
                                'senderID' : loggedInUserID,
                                'message' : message,
                                'exactTime' : timestamp,
@@ -457,13 +457,17 @@ class MessagesStream extends StatelessWidget {
               'message']; //getting text value from the map by using 'text' key
           final messageSenderID = message.data[
               'senderID']; //getting sender value from the map by using 'sender' key
-          final String timestamp = message.data['timestamp'];
+          final timestamp = message.data['timestamp'];
+          var dt = DateTime.parse(timestamp.toDate().toString());
+          String time = formatDate(dt, [h, ':', n, am]).toString();
+          String date = calculateDate(dt);
+          String dateAndTime = "$date, $time"; 
           final String type = message.data['type'];
           final messageBubble = MessageBubble(
             senderID: messageSenderID,
             message: messageText,
             isMe: messageSenderID == loggedInUserID ? true : false,
-            timestamp: timestamp,
+            timestamp: dateAndTime,
             type: type,
           );
           messageBubbles.add(messageBubble); //adds the Text widget to the list
@@ -479,6 +483,83 @@ class MessagesStream extends StatelessWidget {
     );
   }
 }
+
+
+String calculateDate(DateTime tm) {
+      DateTime today = new DateTime.now();
+      Duration oneDay = new Duration(days: 1);
+      Duration twoDay = new Duration(days: 2);
+      Duration oneWeek = new Duration(days: 7);
+      String month;
+      switch (tm.month) {
+        case 1:
+          month = "January";
+          break;
+        case 2:
+          month = "February";
+          break;
+        case 3:
+          month = "March";
+          break;
+        case 4:
+          month = "April";
+          break;
+        case 5:
+          month = "May";
+          break;
+        case 6:
+          month = "June";
+          break;
+        case 7:
+          month = "July";
+          break;
+        case 8:
+          month = "August";
+          break;
+        case 9:
+          month = "September";
+          break;
+        case 10:
+          month = "October";
+          break;
+        case 11:
+          month = "November";
+          break;
+        case 12:
+          month = "December";
+          break;
+      }
+
+      Duration difference = today.difference(tm);
+
+      if (tm.day == today.day) {
+        return "Today";
+      } else if (tm.day == today.day - 1) {
+        return "Yesterday";
+      } else if (difference.compareTo(oneWeek) < 1) {
+        switch (tm.weekday) {
+          case 1:
+            return "Monday";
+          case 2:
+            return "Tuesday";
+          case 3:
+            return "Wednesday";
+          case 4:
+            return "Thurdsday";
+          case 5:
+            return "Friday";
+          case 6:
+            return "Saturday";
+          case 7:
+            return "Sunday";
+        }
+      } else if (tm.year == today.year) {
+        return '${tm.day} $month';
+      } else {
+        return '${tm.day} $month ${tm.year}';
+      }
+      return "";
+    }
 
 class MessageBubble extends StatelessWidget {
   final String message;
@@ -506,49 +587,197 @@ class MessageBubble extends StatelessWidget {
              Material(
             elevation: 6,
             borderRadius: isMe == true
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30))
-                : BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30)),
+                  ? BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30))
+                  : BorderRadius.only(
+                      topRight: Radius.circular(30),
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30)),
             color: isMe == true ? Colors.blueGrey : Colors.lightBlue,
             child:  (type == 'image') 
-                ? Container(
-                  padding: EdgeInsets.symmetric(vertical: 6.4, horizontal: 6.4),
-                  width: 169,
-                  height: 169,
-                  child: GestureDetector(
-                    onTap: ()=>fullScreenImageAttachment(context, message),
-                    child:ClipRRect(
-                          borderRadius: new BorderRadius.circular(22.0),
-                          child:  FadeInImage.assetNetwork(
-                            fadeInDuration: Duration(milliseconds: 200),
-                            fadeOutDuration: Duration(milliseconds: 200),
-                            placeholder: 'gifs/go-top.gif',
-                           image: message,
-                            fit: BoxFit.fill,
+                  ? Container(
+                    padding: EdgeInsets.symmetric(vertical: 6.4, horizontal: 6.4),
+                    width: 169,
+                    height: 169,
+                    child: GestureDetector(
+                      onTap: ()=>fullScreenImageAttachment(context, message),
+                      child:ClipRRect(
+             borderRadius: new BorderRadius.circular(22.0),
+             child:  FadeInImage.assetNetwork(
+               fadeInDuration: Duration(milliseconds: 200),
+               fadeOutDuration: Duration(milliseconds: 200),
+               placeholder: 'gifs/go-top.gif',
+              image: message,
+               fit: BoxFit.fill,
             ),
             ),
             ),
             )
-            : Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child:Text(
-                    //assigning a newly made Text widget to the messageWidget
-                    '$message   $timestamp',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-              ), 
-            ),
+            : Wrap(
+              alignment: WrapAlignment.end,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 13, right: 9, top: 13, bottom: 12),
+                  child: Text(
+                      message, style: TextStyle(fontSize: 15, color: Colors.white),),
+                ),
+                Padding(
+                  padding: (message.length>=40) ? EdgeInsets.symmetric(horizontal:10.0, vertical: 10) : EdgeInsets.only(left:10.0, right:10, top: 19) ,
+                  child: Text(this.timestamp, style: TextStyle(fontSize: 11, color: Colors.white60),),
+                ),
+              ],
+            ), 
           ),
         ],
       ),
     );
   }
 }
+
+
+
+// Stack(
+//             children: <Widget>[
+//               Padding(
+//                 padding: EdgeInsets.only(right: 30.0),
+//                 child: Text(message,
+//                       style: TextStyle(
+//                              color: Colors.white,
+//                              fontSize: 15,
+//                          ),),
+//               ),
+//               Positioned(
+//                 bottom: 0.0,
+//                 right: 0.0,
+//                 child: Row(
+//                   children: <Widget>[
+//                     Text(timestamp,
+//                         style: TextStyle(
+//                           color: Colors.white60,
+//                           fontSize: 10.0,
+//                         ),),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//             ),
+
+            //   Row
+            // (  
+            //   crossAxisAlignment: CrossAxisAlignment.baseline,
+            //    textBaseline: TextBaseline.ideographic,
+            //     mainAxisSize: MainAxisSize.min,
+            //         children: <Widget>[
+            //           (message.length>=25) ? Expanded(
+            //             flex: 1,
+            //              child: Padding(
+            //               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //               child: Text(
+            //               //assigning a newly made Text widget to the messageWidget
+            //               '$message',
+            //               textAlign: TextAlign.left,
+            //               style: TextStyle(
+            //                 color: Colors.white,
+            //                 fontSize: 15,
+            //               ),
+            //     )  
+            //             ),
+            //           ) : Padding(
+            //               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //               child: Text(
+            //               //assigning a newly made Text widget to the messageWidget
+            //               '$message',
+            //               textAlign: TextAlign.left,
+            //               style: TextStyle(
+            //                 color: Colors.white,
+            //                 fontSize: 15,
+            //               ),
+            //     )  
+            //             ),
+            //     SizedBox(
+            //       width: MediaQuery.of(context).size.width*0.03,
+            //     ),
+            //      Padding(
+            //          padding: EdgeInsets.only(right: 10),
+            //          child: Text(
+            //               //assigning a newly made Text widget to the messageWidget
+            //               '$timestamp',
+            //               textAlign: TextAlign.left,
+            //               style: TextStyle(
+            //                 color: Colors.white60,
+            //                 fontSize: 12,
+            //               ),
+            //     ),
+            //        ),
+            //    ],
+            // ),
+
+
+
+
+
+      // Stack(
+      //       children: <Widget>[
+      //         Padding(
+      //           padding: const EdgeInsets.all(8.0),
+      //           child: RichText(
+      //             text: TextSpan(
+      //               children: <TextSpan>[
+
+      //             //real message
+      //             TextSpan(
+      //               text: message + "    ",
+      //               style: TextStyle(
+      //                 fontSize: 15,
+      //                 color: Colors.white
+      //               ),
+      //             ),
+
+      //             //fake additionalInfo as placeholder
+      //             TextSpan(
+      //                 text: "",
+      //                 style: TextStyle(
+      //                     color: Color.fromRGBO(255, 255, 255, 1)
+      //                 )
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     ),
+
+      //     //real additionalInfo
+      //     Positioned(
+      //       child: Text(
+      //         this.timestamp,
+      //         style: TextStyle(
+      //           color: Colors.white60,
+      //           fontSize: 11.0,
+      //         ),
+      //       ),
+      //       right: 8.0,
+      //       bottom: 4.0,
+      //     )
+      //   ],
+      // ),
+
+
+
+
+
+
+      // Wrap(
+      //         alignment: WrapAlignment.end,
+      //         children: <Widget>[
+      //           Padding(
+      //             padding: const EdgeInsets.all(8.0),
+      //             child: Text(
+      //                 "Text message in multi-lines and it looks similar to what's in the picture "),
+      //           ),
+      //           Padding(
+      //             padding: const EdgeInsets.all(8.0),
+      //             child: Text("10:0 PM"),
+      //           ),
+      //         ],
+      //       ),

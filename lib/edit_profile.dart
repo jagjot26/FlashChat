@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/screens/chatList_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:emoji_picker/emoji_picker.dart';
@@ -24,9 +25,9 @@ class EditProfile extends StatefulWidget {
   static const id = 'edit_profile';
 
   final String phoneNumber;
+  final FirebaseUser user;
 
-
-  EditProfile({this.phoneNumber});
+  EditProfile({this.phoneNumber, this.user});
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -119,7 +120,7 @@ uploadImageAndGetDownloadUrl() async{
     });
 
     await Provider.of<Auth>(context, listen: false).createUserInFireStore(
-      Provider.of<Auth>(context,listen: false).user, widget.phoneNumber, displayName, downloadUrl
+      widget.user, widget.phoneNumber, displayName, downloadUrl
     );
      Navigator.pushReplacementNamed(context, ChatListScreen.id);  //check this without await as it doesn't seem like it's reqd here
   }
