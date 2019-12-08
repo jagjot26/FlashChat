@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash_chat/progress.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,8 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-
+bool isImageDownloading;
+String newDownloadUrl=" ";
 
 class ProfileEdit extends StatefulWidget {
 
@@ -30,7 +33,7 @@ class _ProfileEditState extends State<ProfileEdit> {
 final usersRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
 QuerySnapshot qs;
-String newDownloadUrl=" ";
+
 String newBio="";
 bool isTextFieldEmpty=true;
 bool newBioUpdated = false;
@@ -113,7 +116,7 @@ handleEditBio(BuildContext ctx){
           controller: tcontroller,
           decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        hintText: 'Type your message',
+        hintText: 'Type your new bio',
         border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(32),),
         borderSide: BorderSide(color: Colors.grey[400]),
         ),
@@ -159,7 +162,7 @@ handleEditBio(BuildContext ctx){
  });
 }
  
- bool isImageDownloading;
+ 
  String downloadUrl;
  File image;
 
@@ -223,6 +226,7 @@ handleEditBio(BuildContext ctx){
       );
    
     this.image = result;
+    Fluttertoast.showToast(msg: "Updating profile picture...",  textColor: Colors.white, backgroundColor: Colors.black54);
     await uploadImageAndGetDownloadUrl();
   }
 
@@ -245,7 +249,7 @@ handleEditBio(BuildContext ctx){
       );
     
     this.image = result;
-      
+    Fluttertoast.showToast(msg: "Updating profile picture...",  textColor: Colors.white, backgroundColor: Colors.black54);
     await uploadImageAndGetDownloadUrl();
     // setState(() {
     //   this.image = image;
@@ -292,26 +296,34 @@ handleEditBio(BuildContext ctx){
                  Container(
                 alignment: Alignment.topCenter,
                 child: (isImageDownloading==true) ? 
-                 CircleAvatar( backgroundColor: Colors.transparent ,radius: MediaQuery.of(context).size.width*0.18, child: ClipOval(
-  child: FadeInImage.assetNetwork(
-              fadeInDuration: Duration(milliseconds: 200),
-              fadeOutDuration: Duration(milliseconds: 200),
-              placeholder: 'gifs/496.gif',
-              image: newDownloadUrl,
-              fit: BoxFit.fill,
-            ),
-),
-)
-                 :  (widget.profileImageUrl == 'NoImage' || widget.profileImageUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'), radius: MediaQuery.of(context).size.width*0.18,) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: MediaQuery.of(context).size.width*0.18, child: ClipOval(
-  child: FadeInImage.assetNetwork(
-              fadeInDuration: Duration(milliseconds: 200),
-              fadeOutDuration: Duration(milliseconds: 200),
-              placeholder: 'gifs/ld9.gif',
-              image: this.widget.profileImageUrl,
-              fit: BoxFit.fill,
-            ),
-),
-),
+                 CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: MediaQuery.of(context).size.width*0.18,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: newDownloadUrl,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ )
+                 :  (widget.profileImageUrl == 'NoImage' || widget.profileImageUrl == null) 
+                 ? CircleAvatar(child: Image.asset('images/blah.png'), radius: MediaQuery.of(context).size.width*0.18,) 
+                 :  CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: MediaQuery.of(context).size.width*0.18,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: widget.profileImageUrl,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ ),
                ),
                SizedBox(
                  height: MediaQuery.of(context).size.height*0.014,

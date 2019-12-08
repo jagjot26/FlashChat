@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/screens/chatList_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:emoji_picker/emoji_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'provider/auth.dart';
 import 'main.dart';
@@ -82,6 +83,7 @@ uploadImageAndGetDownloadUrl() async{
     // setState(() {
     //   this.image = image;
     // });
+    Fluttertoast.showToast(msg: "Setting profile picture...",  textColor: Colors.white, backgroundColor: Colors.black54);  
     await uploadImageAndGetDownloadUrl();
   }
 
@@ -106,7 +108,7 @@ uploadImageAndGetDownloadUrl() async{
        isImageLoading = true;
     }); 
     this.image = result;
-      
+    Fluttertoast.showToast(msg: "Setting profile picture...",  textColor: Colors.white, backgroundColor: Colors.black54);  
     await uploadImageAndGetDownloadUrl();
     // setState(() {
     //   this.image = image;

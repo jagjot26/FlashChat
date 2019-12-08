@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash_chat/edit_profile.dart';
 import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/chatList_screen.dart';
@@ -258,15 +259,21 @@ handleDownloadUrl(String downUrl){
                       child: AppBar(
             leading: Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
-              child : (widget.imageDownloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 2, child: ClipOval(
-  child: FadeInImage.assetNetwork(
-                placeholder: 'gifs/760.gif',
-                image: widget.imageDownloadUrl,
-                fit: BoxFit.fill,
-              ),
-),
-),
-               
+              child : (widget.imageDownloadUrl == null) 
+              ? CircleAvatar(child: Image.asset('images/blah.png'),) 
+              : CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: 23,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: widget.imageDownloadUrl,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ ), 
             ),
             title: (widget.receiverName == 'defaultName') 
             ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left)
@@ -638,81 +645,9 @@ class MessageBubble extends StatelessWidget {
 
 
 
-// Stack(
-//             children: <Widget>[
-//               Padding(
-//                 padding: EdgeInsets.only(right: 30.0),
-//                 child: Text(message,
-//                       style: TextStyle(
-//                              color: Colors.white,
-//                              fontSize: 15,
-//                          ),),
-//               ),
-//               Positioned(
-//                 bottom: 0.0,
-//                 right: 0.0,
-//                 child: Row(
-//                   children: <Widget>[
-//                     Text(timestamp,
-//                         style: TextStyle(
-//                           color: Colors.white60,
-//                           fontSize: 10.0,
-//                         ),),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//             ),
 
-            //   Row
-            // (  
-            //   crossAxisAlignment: CrossAxisAlignment.baseline,
-            //    textBaseline: TextBaseline.ideographic,
-            //     mainAxisSize: MainAxisSize.min,
-            //         children: <Widget>[
-            //           (message.length>=25) ? Expanded(
-            //             flex: 1,
-            //              child: Padding(
-            //               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            //               child: Text(
-            //               //assigning a newly made Text widget to the messageWidget
-            //               '$message',
-            //               textAlign: TextAlign.left,
-            //               style: TextStyle(
-            //                 color: Colors.white,
-            //                 fontSize: 15,
-            //               ),
-            //     )  
-            //             ),
-            //           ) : Padding(
-            //               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            //               child: Text(
-            //               //assigning a newly made Text widget to the messageWidget
-            //               '$message',
-            //               textAlign: TextAlign.left,
-            //               style: TextStyle(
-            //                 color: Colors.white,
-            //                 fontSize: 15,
-            //               ),
-            //     )  
-            //             ),
-            //     SizedBox(
-            //       width: MediaQuery.of(context).size.width*0.03,
-            //     ),
-            //      Padding(
-            //          padding: EdgeInsets.only(right: 10),
-            //          child: Text(
-            //               //assigning a newly made Text widget to the messageWidget
-            //               '$timestamp',
-            //               textAlign: TextAlign.left,
-            //               style: TextStyle(
-            //                 color: Colors.white60,
-            //                 fontSize: 12,
-            //               ),
-            //     ),
-            //        ),
-            //    ],
-            // ),
+
+
 
 
 
@@ -781,3 +716,15 @@ class MessageBubble extends StatelessWidget {
       //           ),
       //         ],
       //       ),
+
+
+
+
+//       CircleAvatar( backgroundColor: Colors.transparent ,radius: 2, child: ClipOval(
+//   child: FadeInImage.assetNetwork(
+//                 placeholder: 'gifs/760.gif',
+//                 image: widget.imageDownloadUrl,
+//                 fit: BoxFit.fill,
+//               ),
+// ),
+// ),

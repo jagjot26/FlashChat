@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/edit_profile.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,7 @@ fetchUsersRef() async{
                return shimmerEffect();  
              default:
                if(boolGetQSDocuments == false || boolGetPhoneNumber == false)
-                 return Center(child: shimmerEffect());
+                 return shimmerEffect();
                else if(snapshot.hasError)
                  return Text('Error ${snapshot.error}');
                else
@@ -131,15 +132,21 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
          return GestureDetector(
            onTap: () => onContactTap(context, contactsList[index].displayName, getUserIDs[contactsList[index].displayName], getUserPhoneNumbers[contactsList[index].displayName], downloadUrl, bio),
             child: ListTile(
-            leading: (downloadUrl==null) ? CircleAvatar(radius: 21, child: Image.asset('images/blah.png'),) : CircleAvatar( backgroundColor: Colors.transparent ,radius: 21, child: ClipOval(
-  child: FadeInImage.assetNetwork(
-            fadeInDuration: Duration(milliseconds: 150),
-            fadeOutDuration: Duration(milliseconds: 150),
-            placeholder: 'gifs/ld9.gif',
-            image: downloadUrl,
-            fit: BoxFit.fill,
-          ),
-),) ,
+            leading: (downloadUrl==null) 
+            ? CircleAvatar(radius: 22, child: Image.asset('images/blah.png'),) 
+            : CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: 22,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: downloadUrl,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ ),   
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -239,3 +246,14 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
 //     ],
 //   );
 // }
+
+
+// CircleAvatar( backgroundColor: Colors.transparent ,radius: 21, child: ClipOval(
+//   child: FadeInImage.assetNetwork(
+//             fadeInDuration: Duration(milliseconds: 150),
+//             fadeOutDuration: Duration(milliseconds: 150),
+//             placeholder: 'gifs/ld9.gif',
+//             image: downloadUrl,
+//             fit: BoxFit.fill,
+//           ),
+// ),) ,

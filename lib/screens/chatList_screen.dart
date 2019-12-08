@@ -3,6 +3,7 @@ import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/screens/chat_screen.dart' as prefix0;
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix1;
 import 'contacts_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,9 @@ import 'package:flash_chat/Drawer screens/profile_edit.dart';
 import 'package:flash_chat/Drawer screens/privacypolicy.dart';
 import 'package:flash_chat/Drawer screens/about.dart';
 import 'package:flash_chat/Drawer screens/reach_us.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flash_chat/Drawer screens/profile_edit.dart';
 
 String loggedInUserID;
 User loggedInUser;
@@ -130,16 +134,35 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
     color: Colors.blueAccent,
   ),
   accountEmail: loggedInUserPhoneNumber==null ? Text(" ") : Text(loggedInUserPhoneNumber),
-  currentAccountPicture: (loggedInUserImgUrl == 'NoImage' || loggedInUserImgUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png')) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
-  child: FadeInImage.assetNetwork(
-              fadeInDuration: Duration(milliseconds: 200),
-              fadeOutDuration: Duration(milliseconds: 200),
-              placeholder: 'gifs/496.gif',
-              image: this.loggedInUserImgUrl,
-              fit: BoxFit.fill,
-            ),
-),
-),
+  currentAccountPicture: (isImageDownloading == true) 
+  ? CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: 23,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: newDownloadUrl,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ )
+  : (loggedInUserImgUrl == 'NoImage' || loggedInUserImgUrl == null) 
+  ? CircleAvatar(child: Image.asset('images/blah.png'), radius:23) 
+  : CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: 23,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: this.loggedInUserImgUrl,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ ),   
     ),
       ListTile(
         leading: Icon(Icons.person),
@@ -243,17 +266,23 @@ class MessagedContactsWidget extends StatelessWidget {
           child: Column(
         children: <Widget>[
           ListTile(
-            leading: (this.downloadUrl == 'NoImage' || this.downloadUrl == null) ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
-  child: FadeInImage.assetNetwork(
-              fadeInDuration: Duration(milliseconds: 200),
-              fadeOutDuration: Duration(milliseconds: 200),
-              placeholder: 'gifs/ld9.gif',
-              image: this.downloadUrl,
-              fit: BoxFit.fill,
-            ),
-),
-),
-            title: Column(
+            leading: (this.downloadUrl == 'NoImage' || this.downloadUrl == null) 
+            ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,)
+             :   CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: 23,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: this.downloadUrl,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ ),   
+
+                      title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[  
                 (contactName == 'defaultName') ? Text(phoneNumber, style: TextStyle(fontSize: 20), textAlign: TextAlign.start,) : Text(contactName, style: TextStyle(fontSize: 20),),
@@ -424,16 +453,21 @@ class SearchUsers extends SearchDelegate<String>{
      itemCount: suggestionsList.length,
      itemBuilder: (context,index) => ListTile(
        onTap: ()=> openChatScreenFromSearch(suggestionsList[index], userInfoForSearch[suggestionsList[index]][0], userInfoForSearch[suggestionsList[index]][2], context, userInfoForSearch[suggestionsList[index]][1], userInfoForSearch[suggestionsList[index]][4])  ,
-       leading: (userInfoForSearch[suggestionsList[index]][1] == 'NoImage' || userInfoForSearch[suggestionsList[index]][1]==null) ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,) :  CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
-  child: FadeInImage.assetNetwork(
-              fadeInDuration: Duration(milliseconds: 200),
-              fadeOutDuration: Duration(milliseconds: 200),
-              placeholder: 'gifs/ld9.gif',
-              image: userInfoForSearch[suggestionsList[index]][1],
-              fit: BoxFit.fill,
-            ),
-),
-),
+       leading: (userInfoForSearch[suggestionsList[index]][1] == 'NoImage' || userInfoForSearch[suggestionsList[index]][1]==null)
+        ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,)
+        :  CircleAvatar(
+   backgroundColor: Colors.blue,
+   radius: 23,
+   child: ClipOval(
+    child: CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: userInfoForSearch[suggestionsList[index]][1],
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
+   ),
+ ),   
        title: Column(
          crossAxisAlignment: CrossAxisAlignment.start,
          children: <Widget>[
@@ -466,89 +500,36 @@ class SearchUsers extends SearchDelegate<String>{
   }
  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// return StreamBuilder(
-//       stream: activeUsersRef.document(loggedInUserID).collection('messagedUsers').orderBy('timestamp', descending:false).snapshots(),
-//       builder: (context, snapshot){
-
-//         if(!snapshot.hasData){
-//           return Container();
-//         }
         
-        
-//         final messagedUsers = snapshot.data.documents;
-//         List<MessagedContactsWidget> listOfMessagedContactsWidget = [];
-//           for(var users in messagedUsers){
-//           final String userPhoneNumber = users.data['phoneNumber'];
-//           final String downloadUrl = users.data['image'];
-//           final String receiverID = users.data['receiverID'];
-//           final String mostRecentText = users.data['mostRecentMessage'];
-//           for(int index = 0; index < contactsList.length; index++){
-//             phoneNumberAtIndex = (contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value;
-//             String trimmedPhoneNumber = phoneNumberAtIndex.split(" ").join("");
-//             if(userPhoneNumber == trimmedPhoneNumber){
-//               userName = contactsList[index].displayName;
-//                if(contactedUserNames.length!=0){
-//                  counter = 0;
-//                 for(int i=0;i<contactedUserNames.length;i++){
-//                  if(contactedUserNames[i]==userName){
-//                    counter++;
-//                   break;
-//                  }               
-//                 }
-//                 if(counter==0){
-//                  contactedUserNames.add(userName);
-//                  userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrl, receiverID, mostRecentText];
-//                 }
-//              }
-//              else{
-//               contactedUserNames.add(userName);
-//               userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrl, receiverID, mostRecentText];
-//              }
-//               break;
-//             }
-//             else{
-//               userName = userPhoneNumber;
-//             }
-//           }
-          
-//         isUserNameActuallyNumber = isNumeric(userName);
-//            var messagedContact;
-//          if(isUserNameActuallyNumber == true){
-//             messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl,mostRecentMessage: mostRecentText,);
-//          }
-//          else{
-//             messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrl, mostRecentMessage: mostRecentText,);
-//          }
 
           
-     
-//       listOfMessagedContactsWidget.add(messagedContact);
-//       }
-      
-//       return Expanded(
-//               child: SingleChildScrollView(
-//                 child: Column(
-//           children: listOfMessagedContactsWidget,
-//         ),
-//               ),
-//       );
-        
-//       },      
+// CircleAvatar( backgroundColor: Colors.transparent ,radius: 23, child: ClipOval(
+//   child: FadeInImage.assetNetwork(
+//               fadeInDuration: Duration(milliseconds: 200),
+//               fadeOutDuration: Duration(milliseconds: 200),
+//               placeholder: 'gifs/ld9.gif',
+//               image: this.downloadUrl,
+//               fit: BoxFit.fill,
+//             ),
+// ),
+// ),
+   
+//  CircleAvatar(
+//    backgroundColor: Colors.transparent,
+//    radius: 23,
+//    child: ClipOval(
+//     child: CachedNetworkImage(
+//       fadeInCurve: Curves.easeIn,
+//       fadeOutCurve: Curves.easeOut,
+//       imageUrl: this.downloadUrl,
+//       placeholder: spinkit(context, d),
+//       errorWidget: new Icon(Icons.error),
+//     ),
+//    ),
+//  ),   
 
-//     );
+
+
+
+
+

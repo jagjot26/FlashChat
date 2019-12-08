@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Container circularProgress() {
   return Container(
@@ -10,6 +11,12 @@ Container circularProgress() {
         valueColor: AlwaysStoppedAnimation(Colors.purple),
       ));
 }
+
+Widget spinkit(){ 
+  return SpinKitCircle(
+  color: Colors.white,
+  size: 20.0,
+);}
 
 Container shimmerEffect(){
   return Container(
