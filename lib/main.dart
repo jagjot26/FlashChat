@@ -15,6 +15,7 @@ import 'screens/otp_screen.dart';
 import 'screens/tempScreen.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'Drawer screens/profile_edit.dart';
+import 'Drawer screens/about.dart';
 
 
 // handle invalid verification code error
@@ -160,6 +161,18 @@ class FlashChat extends StatelessWidget {
 //                ? SplashScreen()
 //                 : CreateAccount(),
 //                 ),
+
+// auth.isAuth
+//                 ? ChatListScreen()
+//                : FutureBuilder(
+//                 future: auth.tryAutoLogin(),
+//                 builder: (ctx, authResultSnapshot) =>
+//                 authResultSnapshot.connectionState ==
+//                 ConnectionState.waiting
+//                ? SplashScreen()
+//                 : CreateAccount(),
+//                 ),
+
 
 // auth.isAuth
 //                 ? ChatListScreen()

@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/screens/chatList_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:emoji_picker/emoji_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'provider/auth.dart';
 import 'main.dart';
 import 'progress.dart';
-import 'screens/splash-screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:io';

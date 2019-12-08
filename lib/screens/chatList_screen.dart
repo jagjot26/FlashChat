@@ -201,8 +201,7 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
         leading: Icon(Icons.info),
         title: Text('About'),
         onTap: () {
-          // Update the state of the app.
-          // ...
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutPage()));
         },
       ),
           ],
