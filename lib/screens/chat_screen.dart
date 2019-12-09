@@ -257,6 +257,7 @@ handleDownloadUrl(String downUrl){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEditForChatScreen(profileImageUrl: widget.imageDownloadUrl, userName: widget.receiverName, about: widget.receiverBio, phoneNumber: widget.receiverPhoneNumber,)));
                       },
                       child: AppBar(
+                        backgroundColor: Theme.of(context).accentColor,
             leading: Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
               child : (widget.imageDownloadUrl == null) 
@@ -285,117 +286,135 @@ handleDownloadUrl(String downUrl){
       ),
       
       
-    body: Column(
-        children: <Widget>[
-         (boolGetLoggedInUserID == true && boolGetPhoneNumber == true ) ? Expanded(child: MessagesStream()) : Expanded(child: circularProgress()),
-         Container(
-           padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-           child: Row(
-             children: <Widget>[
-                  Expanded(
-                      child: TextField(
-                      onChanged: (val){
-                        setState(() {
-                          message = val;
-                          if(val.length==0){
-                            isTextFieldEmpty = true;
-                          }
-                           if(val.length>0){
-                              isTextFieldEmpty = false; 
-                           }                       
-                                                  
-                        });
-                      },
-                      controller: tcontroller,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        hintText: 'Type your message',
-                        suffixIcon: GestureDetector(
-                          onTap: ()=>handleSelectImage(context),
-                          child:Icon(Icons.insert_photo, color: Colors.black45,)
-                          ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(32),),
-                        borderSide: BorderSide(color: Colors.grey[400]),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(32),),
-                          borderSide: BorderSide(color: Colors.grey[400]),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(32),),            
-                          borderSide: BorderSide(color: Colors.grey[400]),           
-                        ),
-                      ),
+    body: Stack(
+      children: <Widget>[
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('images/hilll.png'),
+                      fit: BoxFit.fill,
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width*0.0090,
-                  ),
-                  RawMaterialButton(
-                            onPressed: () {
-                              timestamp =  DateTime.now();
-                            // indexFirestore += 1;  
-                            if(tcontroller.text.length>0){
-                              setState(() {
-                                 tcontroller.clear();
-                                 isTextFieldEmpty = true;
-                              });                             
-                              var data = {
-                                'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
-                                'receiverID' : widget.receiverUserID,
-                                'phoneNumber' : widget.receiverPhoneNumber,
-                                'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
-                                'mostRecentMessage' : message,
-                              };
-
-                              var data2 = {
-                                'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
-                                'receiverID' : loggedInUserID,
-                                'phoneNumber' : loggedInUserPhoneNumber,
-                                'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
-                                'mostRecentMessage' : message,
-                              };
-                             
-                             var messageData = {
-                               'timestamp' : timestamp,
-                               'senderID' : loggedInUserID,
-                               'message' : message,
-                               'exactTime' : timestamp,
-                               'type' : 'text-message',
-                              //  'index' : indexFirestore
-                             };
-
-                            //  var indexData = {
-                            //    'index' : indexFirestore
-                            //  };
-                              
-                              activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).setData(data);
-                              activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).setData(data2);
-                              activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageData);
-                              activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageData);
-                                    
-
-
-                            }  
-                            
-                            downloadUrlBool = false;
-                            },
-                            //RawMaterialButton widget class is used for building buttons from scratch
-                            child: Icon(
-                              Icons.send,
-                              color: (isTextFieldEmpty == false) ? Colors.blueAccent : Colors.grey,
-                            ), //Icon widget requires an either Icons.someicon or FontAwesomeIcons.someicon value
-                            constraints:
-                            BoxConstraints.tightFor(width: 43.5, height: 43.5),
-                            shape: CircleBorder(),
-                            fillColor: Colors.black,
-                            elevation: 0.0,
+        ),
+        Column(
+            children: <Widget>[
+             (boolGetLoggedInUserID == true && boolGetPhoneNumber == true ) ? Expanded(child: MessagesStream()) : Expanded(child: circularProgress()),
+             Container(
+               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+               child: Row(
+                 children: <Widget>[
+                      Expanded(
+                          child: TextField(
+                          onChanged: (val){
+                            setState(() {
+                              message = val;
+                              if(val.length==0){
+                                isTextFieldEmpty = true;
+                              }
+                               if(val.length>0){
+                                  isTextFieldEmpty = false; 
+                               }                       
+                                                      
+                            });
+                          },
+                          controller: tcontroller,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            hintText: 'Type your message',
+                            suffixIcon: GestureDetector(
+                              onTap: ()=>handleSelectImage(context),
+                              child:Icon(Icons.insert_photo, color: Colors.black45,)
+                              ),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(32),),
+                            borderSide: BorderSide(color: Colors.grey[400]),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(32),),
+                              borderSide: BorderSide(color: Colors.grey[400]),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(32),),            
+                              borderSide: BorderSide(color: Colors.grey[400]),           
+                            ),
                           ),
-                ],
-           ),
-         ),
-        ],
-      ), 
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width*0.0090,
+                      ),
+                      RawMaterialButton(
+                                onPressed: () {
+                                  timestamp =  DateTime.now();
+                                // indexFirestore += 1;  
+                                if(tcontroller.text.length>0){
+                                  setState(() {
+                                     tcontroller.clear();
+                                     isTextFieldEmpty = true;
+                                  });                             
+                                  var data = {
+                                    'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                    'receiverID' : widget.receiverUserID,
+                                    'phoneNumber' : widget.receiverPhoneNumber,
+                                    'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
+                                    'mostRecentMessage' : message,
+                                  };
+
+                                  var data2 = {
+                                    'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                    'receiverID' : loggedInUserID,
+                                    'phoneNumber' : loggedInUserPhoneNumber,
+                                    'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
+                                    'mostRecentMessage' : message,
+                                  };
+                                 
+                                 var messageData = {
+                                   'timestamp' : timestamp,
+                                   'senderID' : loggedInUserID,
+                                   'message' : message,
+                                   'exactTime' : timestamp,
+                                   'type' : 'text-message',
+                                  //  'index' : indexFirestore
+                                 };
+
+                                //  var indexData = {
+                                //    'index' : indexFirestore
+                                //  };
+                                  
+                                  activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).setData(data);
+                                  activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).setData(data2);
+                                  activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageData);
+                                  activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageData);
+                                        
+
+
+                                }  
+                                
+                                downloadUrlBool = false;
+                                },
+                                //RawMaterialButton widget class is used for building buttons from scratch
+                                child: Icon(
+                                  Icons.send,
+                                  color: (isTextFieldEmpty == false) ? Colors.blueAccent : Colors.grey,
+                                ), //Icon widget requires an either Icons.someicon or FontAwesomeIcons.someicon value
+                                constraints:
+                                BoxConstraints.tightFor(width: 43.5, height: 43.5),
+                                shape: CircleBorder(),
+                                fillColor: Colors.black,
+                                elevation: 0.0,
+                              ),
+                    ],
+               ),
+             ),
+             SizedBox(
+               height: 4,
+             ),
+            ],
+          ),
+      ],
+    ), 
        );
   }
 }
@@ -602,7 +621,7 @@ class MessageBubble extends StatelessWidget {
                       topRight: Radius.circular(30),
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30)),
-            color: isMe == true ? Colors.blueGrey : Colors.lightBlue,
+            color: isMe == true ? Colors.cyan[700] : Colors.blueAccent,
             child:  (type == 'image') 
                   ? Container(
                     padding: EdgeInsets.symmetric(vertical: 6.4, horizontal: 6.4),

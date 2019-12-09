@@ -4,9 +4,18 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Container circularProgress() {
   return Container(
-    color: Colors.white,
+    color: Colors.transparent,
+    padding: EdgeInsets.only(top: 10.0),
       alignment: Alignment.center,
-      padding: EdgeInsets.only(top: 10.0),
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation(Colors.purple),
+      ));
+}
+
+Container circularProgressForChatScreen() {
+  return Container(
+    color: Color(0xff0d1a26),
+      alignment: Alignment.center,
       child: CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation(Colors.purple),
       ));
@@ -21,12 +30,12 @@ Widget spinkit(){
 Container shimmerEffect(){
   return Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 7.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Shimmer.fromColors(
-              baseColor: Colors.grey[300],
+              baseColor: Colors.grey[350],
               highlightColor: Colors.grey[50],
               enabled: true,
               child: Column(

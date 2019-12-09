@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash_chat/progress.dart';
+import 'package:flash_chat/screens/fullsize_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -257,6 +258,15 @@ handleEditBio(BuildContext ctx){
   }
 
 
+fullScreenImage(BuildContext context){
+  if(widget.profileImageUrl!=null){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => FullSizeImage(downloadUrl: widget.profileImageUrl,)));
+}
+else{
+  Scaffold.of(context).showSnackBar(SnackBar(action: SnackBarAction(label: 'OK', onPressed: (){},) ,content: Text("This user hasn't uploaded any profile picture"
+  )));
+}
+  }
 
 
 
@@ -274,7 +284,7 @@ handleEditBio(BuildContext ctx){
                   height: MediaQuery.of(context).size.height*0.415,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('images/scenery1.jpg'),
+                      image: AssetImage('gifs/comet.gif'),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -282,7 +292,14 @@ handleEditBio(BuildContext ctx){
                 Expanded(
                     child: Container(
                     width: double.infinity,
-                    color: Color(0xffe6fff5),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter, 
+      colors: [const Color(0xff8e54cc), const Color(0xFf32cdfb)], 
+      tileMode: TileMode.repeated, // repeats the gradient over the canvas
+    ),
+                    ),
                   ),
                 ),
               ],
@@ -310,8 +327,8 @@ handleEditBio(BuildContext ctx){
    ),
  )
                  :  (widget.profileImageUrl == 'NoImage' || widget.profileImageUrl == null) 
-                 ? CircleAvatar(child: Image.asset('images/blah.png'), radius: MediaQuery.of(context).size.width*0.18,) 
-                 :  CircleAvatar(
+                 ? GestureDetector(onTap: ()=>fullScreenImage(context), child:CircleAvatar(child: Image.asset('images/blah.png'), radius: MediaQuery.of(context).size.width*0.18,)) 
+                 :  GestureDetector(onTap: ()=> fullScreenImage(context),child:CircleAvatar(
    backgroundColor: Colors.blue,
    radius: MediaQuery.of(context).size.width*0.18,
    child: ClipOval(
@@ -323,7 +340,7 @@ handleEditBio(BuildContext ctx){
       errorWidget: (context, url, error) => new Icon(Icons.error),
     ),
    ),
- ),
+ ),),
                ),
                SizedBox(
                  height: MediaQuery.of(context).size.height*0.014,
@@ -332,18 +349,19 @@ handleEditBio(BuildContext ctx){
                  fontFamily: 'Pacifico',
                  fontSize: 34,
                  fontWeight: FontWeight.w500,
-                 color: Color(0xff008080),
+                 color: Color(0xffc9f0ff),
                ),
                ),
                SizedBox(
                  height: MediaQuery.of(context).size.height*0.04,
                ),
                Card(
+                 color: Color(0xffd4e4ff),
                 margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                 child: ListTile(
                   leading: Icon(
                     Icons.phone,
-                    color: Colors.teal[400],
+                    color: Color(0xFf4d7dff),
                   ),
                   title: Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -361,11 +379,12 @@ handleEditBio(BuildContext ctx){
                  height: MediaQuery.of(context).size.height*0.002,
                ),
                  Card(
+                   color: Color(0xffd4e4ff),
                 margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                 child: ListTile(
                   leading: Icon(
                     Icons.info,
-                    color:Colors.teal[400],
+                    color:Color(0xff4d7dff),
                   ),
                   title: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -386,7 +405,7 @@ handleEditBio(BuildContext ctx){
                   ),
                   trailing: Padding(
                     padding: const EdgeInsets.only(top: 30, left: 5, bottom: 5),
-                    child: GestureDetector(onTap: ()=> handleEditBio(context) , child: Icon(Icons.edit, color: Colors.cyan[400],)),
+                    child: GestureDetector(onTap: ()=> handleEditBio(context) , child: Icon(Icons.edit, color: Color(0xff628cff),)),
                   ),
                 )),
               ],
@@ -403,7 +422,7 @@ handleEditBio(BuildContext ctx){
                  child: Icon(Icons.edit, color: Colors.white,),
                  constraints: BoxConstraints.tightFor(width: 36, height: 36),
                  shape: CircleBorder(),
-                 fillColor: Color(0xff008080),
+                 fillColor: Color(0xff0043fb),
                  elevation: 0.0,
                 ),
               ),

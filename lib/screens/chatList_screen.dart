@@ -124,91 +124,92 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            UserAccountsDrawerHeader(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          UserAccountsDrawerHeader(
   accountName: loggedInUserName==null ? Text(" ") :Text(loggedInUserName),
   decoration: BoxDecoration(
-    color: Colors.blueAccent,
+    color: Theme.of(context).accentColor,
   ),
   accountEmail: loggedInUserPhoneNumber==null ? Text(" ") : Text(loggedInUserPhoneNumber),
   currentAccountPicture: (isImageDownloading == true) 
   ? CircleAvatar(
-   backgroundColor: Colors.blue,
+   backgroundColor: Theme.of(context).accentColor,
    radius: 23,
    child: ClipOval(
     child: CachedNetworkImage(
-      fadeInCurve: Curves.easeIn,
-      fadeOutCurve: Curves.easeOut,
-      imageUrl: newDownloadUrl,
-      placeholder: (context, url) => spinkit(),
-      errorWidget: (context, url, error) => new Icon(Icons.error),
+        fadeInCurve: Curves.easeIn,
+        fadeOutCurve: Curves.easeOut,
+        imageUrl: newDownloadUrl,
+        placeholder: (context, url) => spinkit(),
+        errorWidget: (context, url, error) => new Icon(Icons.error),
     ),
    ),
  )
   : (loggedInUserImgUrl == 'NoImage' || loggedInUserImgUrl == null) 
   ? CircleAvatar(child: Image.asset('images/blah.png'), radius:23) 
   : CircleAvatar(
-   backgroundColor: Colors.blue,
+   backgroundColor: Theme.of(context).accentColor,
    radius: 23,
    child: ClipOval(
     child: CachedNetworkImage(
-      fadeInCurve: Curves.easeIn,
-      fadeOutCurve: Curves.easeOut,
-      imageUrl: this.loggedInUserImgUrl,
-      placeholder: (context, url) => spinkit(),
-      errorWidget: (context, url, error) => new Icon(Icons.error),
+        fadeInCurve: Curves.easeIn,
+        fadeOutCurve: Curves.easeOut,
+        imageUrl: this.loggedInUserImgUrl,
+        placeholder: (context, url) => spinkit(),
+        errorWidget: (context, url, error) => new Icon(Icons.error),
     ),
    ),
  ),   
     ),
-      ListTile(
-        leading: Icon(Icons.person),
-        title: Text('Edit Profile',),
-        onTap: () {
-          Navigator.of(context).pop();
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEdit(profileImageUrl: loggedInUserImgUrl, userName: loggedInUserName, about: loggedInUserBio, phoneNumber: loggedInUserPhoneNumber,)));
-          
-        },
-      ),
-      ListTile(
-        leading: Icon(Icons.contacts),
-        title: Text('Contacts'),
-        onTap: (){
-          Navigator.of(context).pop();
-          handleContactsButton(context);
-        },
-      ),
-      ListTile(
-        leading: Icon(Icons.insert_drive_file),
-        title: Text('Privacy Policy'),
-        onTap: () {
-          // Update the state of the app.
-          // ...
-        },
-      ),
-      ListTile(
-        leading: Icon(Icons.people),
-        title: Text('Reach Us'),
-        onTap: () {
-          // Update the state of the app.
-          // ...
-        },
-      ),
-      ListTile(
-        leading: Icon(Icons.info),
-        title: Text('About'),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutPage()));
-        },
-      ),
-          ],
+        ListTile(
+      leading: Icon(Icons.person,color: Colors.blueGrey),
+      title: Text('Edit Profile'),
+      onTap: () {
+        Navigator.of(context).pop();
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEdit(profileImageUrl: loggedInUserImgUrl, userName: loggedInUserName, about: loggedInUserBio, phoneNumber: loggedInUserPhoneNumber,)));
+        
+      },
         ),
+        ListTile(
+      leading: Icon(Icons.contacts, color: Colors.blueGrey),
+      title: Text('Contacts'),
+      onTap: (){
+        Navigator.of(context).pop();
+        handleContactsButton(context);
+      },
+        ),
+        ListTile(
+      leading: Icon(Icons.insert_drive_file, color: Colors.blueGrey),
+      title: Text('Privacy Policy'),
+      onTap: () {
+        // Update the state of the app.
+        // ...
+      },
+        ),
+        ListTile(
+      leading: Icon(Icons.people, color: Colors.blueGrey,),
+      title: Text('Reach Us'),
+      onTap: () {
+        // Update the state of the app.
+        // ...
+      },
+        ),
+        ListTile(
+      leading: Icon(Icons.info, color: Colors.blueGrey,),
+      title: Text('About'),
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutPage()));
+      },
+        ),
+        ],
       ),
+        ),
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).accentColor,
         title: Text('FlashChat'),
       actions: <Widget>[
         Padding(
@@ -268,7 +269,7 @@ class MessagedContactsWidget extends StatelessWidget {
             leading: (this.downloadUrl == 'NoImage' || this.downloadUrl == null) 
             ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,)
              :   CircleAvatar(
-   backgroundColor: Colors.blue,
+   backgroundColor: Theme.of(context).accentColor,
    radius: 23,
    child: ClipOval(
     child: CachedNetworkImage(
@@ -327,7 +328,9 @@ class ChatList extends StatelessWidget {
              stream: Firestore.instance.collection('users').snapshots(),
              builder: (context, snapshot2){
                if(!snapshot2.hasData || gotAsyncInfo == false || gotContactsInfo == false || getSharedPrefInfo == false){
-              return Container();
+              return Container(
+                color: Colors.transparent,
+              );
                 }
 
                final messagedUsers = snapshot.data.documents;
@@ -455,7 +458,7 @@ class SearchUsers extends SearchDelegate<String>{
        leading: (userInfoForSearch[suggestionsList[index]][1] == 'NoImage' || userInfoForSearch[suggestionsList[index]][1]==null)
         ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,)
         :  CircleAvatar(
-   backgroundColor: Colors.blue,
+   backgroundColor: Theme.of(context).primaryColor,
    radius: 23,
    child: ClipOval(
     child: CachedNetworkImage(

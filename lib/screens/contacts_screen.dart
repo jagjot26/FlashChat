@@ -151,7 +151,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(contactsList[index].displayName, textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.w500),),
-                Text((contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value.split(" ").join("")),
+                Text((contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value.split(" ").join(""), style: TextStyle(color: Colors.black54),),
      
               ],
             ),
@@ -193,8 +193,9 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).accentColor,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -213,7 +214,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
         ],
       ),
       body: SafeArea(
-        child: (boolGetQSDocuments == false || boolGetPhoneNumber == false) ? Center(child: shimmerEffect()) : handleContacts(context),
+        child: handleContacts(context),
       ),
     );
   }
