@@ -39,8 +39,8 @@ final receiverUserID;
 final String receiverPhoneNumber;
 final String imageDownloadUrl;
 final String receiverBio;
-
-ChatScreen({this.receiverName, this.receiverUserID, this.receiverPhoneNumber, this.imageDownloadUrl, this.receiverBio});
+final String receiverToken;
+ChatScreen({this.receiverName, this.receiverUserID, this.receiverPhoneNumber, this.imageDownloadUrl, this.receiverBio, this.receiverToken});
 
 
   @override
@@ -223,6 +223,7 @@ handleDownloadUrl(String downUrl){
                                'message' : downUrl,
                                'exactTime' : timestamp,
                                'type' : 'image',
+                               'receiverToken' : widget.receiverToken
                               //  'index' : indexFirestore
                              };
 

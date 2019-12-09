@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flash_chat/screens/chatList_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,6 +17,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 
+var fcmToken;
 String downloadUrl;
 String displayName;
 bool isLoading = false;
@@ -120,12 +122,19 @@ uploadImageAndGetDownloadUrl() async{
     });
 
     await Provider.of<Auth>(context, listen: false).createUserInFireStore(
-      widget.user, widget.phoneNumber, displayName, downloadUrl
+      widget.user, widget.phoneNumber, displayName, downloadUrl, fcmToken
     );
      Navigator.pushReplacementNamed(context, ChatListScreen.id);  //check this without await as it doesn't seem like it's reqd here
   }
 
 
+@override
+  void initState() {
+    FirebaseMessaging().getToken().then((token){     
+     fcmToken = token;
+   });
+    super.initState();
+  }
 
 
   @override

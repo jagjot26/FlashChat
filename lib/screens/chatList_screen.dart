@@ -1,9 +1,11 @@
 import 'dart:core';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart' as prefix0;
 import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
-import 'package:flash_chat/screens/chat_screen.dart' as prefix0;
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix1;
+import 'package:flutter/material.dart';
 import 'contacts_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +22,7 @@ import 'package:flash_chat/Drawer screens/reach_us.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flash_chat/Drawer screens/profile_edit.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 String loggedInUserID;
 User loggedInUser;
@@ -55,7 +58,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
 
 
-
+FirebaseMessaging firemessage = prefix0.FirebaseMessaging();
 String loggedInUserPhoneNumber;
 String loggedInUserImgUrl;
 bool getLoggedInUserIDBool= false;
@@ -112,6 +115,19 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
  });
 }
 
+firebaseMessageConfigure(){
+// firemessage.configure(
+//      onLaunch: (Map<String,dynamic> msg) async{
+//        print("On Launch called");
+//      },
+//      onResume: (Map<String,dynamic> msg) async{
+//        print("On Resume called");
+//      },
+//      onMessage: (Map<String,dynamic> msg) async{
+//        print("On Message called");
+//      },
+//    );
+}
 
 @override
   void initState() {
@@ -119,6 +135,9 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
     setLoggedInUserInfo();
     getContacts();
    setLoggedInUserID();
+   firebaseMessageConfigure();
+   
+  
   }
 
   @override
@@ -239,12 +258,12 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
   }
 }
 
-openChatScreen(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio){
-Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio,)));
+openChatScreen(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio, String token){
+Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio, receiverToken: token,)));
 }
 
-openChatScreenFromSearch(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio){
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio,)));
+openChatScreenFromSearch(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio, token){
+Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio, receiverToken: token,)));
 }
 
 String downloadUrlFinal;
@@ -256,13 +275,14 @@ class MessagedContactsWidget extends StatelessWidget {
   final String downloadUrl;
   final String mostRecentMessage;
   final String bio;
+  final String token;
 
-  MessagedContactsWidget({this.contactName = 'defaultName', this.phoneNumber, this.userID, this.downloadUrl, this.mostRecentMessage, this.bio});
+  MessagedContactsWidget({this.contactName = 'defaultName', this.phoneNumber, this.userID, this.downloadUrl, this.mostRecentMessage, this.bio, this.token});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-          onTap: ()=> openChatScreen(contactName, phoneNumber, userID, context, this.downloadUrl, this.bio),
+          onTap: ()=> openChatScreen(contactName, phoneNumber, userID, context, this.downloadUrl, this.bio, this.token),
           child: Column(
         children: <Widget>[
           ListTile(
@@ -346,6 +366,7 @@ class ChatList extends StatelessWidget {
                }     
               }
           final String receiverID = users.data['receiverID'];
+          final String receiverToken = users.data['fcmToken'];
           String mostRecentText = users.data['mostRecentMessage'];
           if(mostRecentText.length>42){
             mostRecentText = mostRecentText.substring(0,42);
@@ -365,12 +386,12 @@ class ChatList extends StatelessWidget {
                 }
                 if(counter==0){
                  contactedUserNames.add(userName);
-                 userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText, bioOfUser];
+                 userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText, bioOfUser, receiverToken];
                 }
              }
              else{
               contactedUserNames.add(userName);
-              userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText, bioOfUser];
+              userInfoForSearch[userName] = [trimmedPhoneNumber.toString(), downloadUrlFinal, receiverID, mostRecentText, bioOfUser, receiverToken];
              }
               break;
             }
@@ -382,10 +403,10 @@ class ChatList extends StatelessWidget {
         isUserNameActuallyNumber = isNumeric(userName);
            var messagedContact;
          if(isUserNameActuallyNumber == true){
-            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal,mostRecentMessage: mostRecentText, bio: bioOfUser,);
+            messagedContact = MessagedContactsWidget(phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal,mostRecentMessage: mostRecentText, bio: bioOfUser, token: receiverToken,);
          }
          else{
-            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal, mostRecentMessage: mostRecentText, bio: bioOfUser,);
+            messagedContact = MessagedContactsWidget(contactName: userName, phoneNumber: userPhoneNumber, userID: receiverID, downloadUrl: downloadUrlFinal, mostRecentMessage: mostRecentText, bio: bioOfUser, token: receiverToken,);
          }
 
           
@@ -454,7 +475,7 @@ class SearchUsers extends SearchDelegate<String>{
    return ListView.builder(
      itemCount: suggestionsList.length,
      itemBuilder: (context,index) => ListTile(
-       onTap: ()=> openChatScreenFromSearch(suggestionsList[index], userInfoForSearch[suggestionsList[index]][0], userInfoForSearch[suggestionsList[index]][2], context, userInfoForSearch[suggestionsList[index]][1], userInfoForSearch[suggestionsList[index]][4])  ,
+       onTap: ()=> openChatScreenFromSearch(suggestionsList[index], userInfoForSearch[suggestionsList[index]][0], userInfoForSearch[suggestionsList[index]][2], context, userInfoForSearch[suggestionsList[index]][1], userInfoForSearch[suggestionsList[index]][4], userInfoForSearch[suggestionsList[index]][5])  ,
        leading: (userInfoForSearch[suggestionsList[index]][1] == 'NoImage' || userInfoForSearch[suggestionsList[index]][1]==null)
         ? CircleAvatar(child: Image.asset('images/blah.png'), radius: 23,)
         :  CircleAvatar(

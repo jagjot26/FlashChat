@@ -31,6 +31,8 @@ class ProfileEdit extends StatefulWidget {
 
 class _ProfileEditState extends State<ProfileEdit> {
 
+
+var fcmToken;
 final usersRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
 QuerySnapshot qs;
@@ -52,7 +54,8 @@ searchForUidViaPhoneNumberAndUpdateProfilePic(String downloadUrl) async{
         "bio": (newBio == "") ? widget.about : newBio ,
         "phoneNumber": widget.phoneNumber,
         "timestamp": timestamp,
-        "imageDownloadUrl" : downloadUrl
+        "imageDownloadUrl" : downloadUrl,
+        "fcmToken" : this.fcmToken
       });    
      }     
     }
@@ -74,6 +77,7 @@ handleBioChangerButton() async{
         "phoneNumber": widget.phoneNumber,
         "timestamp": timestamp,
         "imageDownloadUrl" : (newDownloadUrl==" ") ? widget.profileImageUrl : newDownloadUrl,
+        "fcmToken" : this.fcmToken
       });    
      }     
     }
@@ -269,6 +273,18 @@ else{
   }
 
 
+getToken() async{
+final prefs = await SharedPreferences.getInstance();
+  this.fcmToken = prefs.getString("fcmToken");
+}
+
+
+@override
+  void initState() {
+    getToken();
+    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

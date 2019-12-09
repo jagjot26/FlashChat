@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -10,9 +11,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 
 
+
 final usersRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
 QuerySnapshot qs;
+
 bool userExistsInFirebase = false;
  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -23,7 +26,8 @@ class Auth with ChangeNotifier {
   String loggedInUserIDSharedPref;
   String loggedInUserContactNumber;
   String loggedInUserName;
-
+ 
+ 
   bool get isAuth{
     return uidSharedPref!=null;
   }
@@ -77,13 +81,19 @@ class Auth with ChangeNotifier {
 //   }
 
 
-  createUserInFireStore(FirebaseUser user, String phoneNumber, String displayName, String downloadUrl) async {
+  createUserInFireStore(FirebaseUser user, String phoneNumber, String displayName, String downloadUrl, var token) async {
     // 1) check if user exists in users collection in database (according to their id)
     DocumentSnapshot doc;
-    
+    final prefs7 = await SharedPreferences.getInstance();
     final prefs2 = await SharedPreferences.getInstance();
       prefs2.setString("loggedInUserPhoneNumber", phoneNumber);
-
+   prefs7.setString("fcmToken", token);
+  //   FirebaseMessaging().getToken().then((token){     
+  //    fcmToken = token;
+  //    prefs7.setString("fcmToken", token);
+  //    print(token);
+  //  });
+ 
     final prefs3 = await SharedPreferences.getInstance();
     prefs3.setString("loggedInUserImage", downloadUrl);
 
@@ -92,7 +102,11 @@ class Auth with ChangeNotifier {
 
     final prefs6 = await SharedPreferences.getInstance();
     prefs6.setString("loggedInUserBio", "Hello there, I'm available for chat");
-
+   
+     
+    
+   
+  
 
       // 2) if the user doesn't exist, then we want to take them to the create account page
 //      final username = await Navigator.push(
@@ -105,7 +119,8 @@ class Auth with ChangeNotifier {
         "bio": "Hello there, I'm available for chat",
         "phoneNumber": phoneNumber,
         "timestamp": timestamp,
-        "imageDownloadUrl" : downloadUrl
+        "imageDownloadUrl" : downloadUrl,
+        "token": token,
       });    
     
       

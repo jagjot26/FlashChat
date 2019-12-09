@@ -96,8 +96,8 @@ fetchUsersRef() async{
 bool displayContact = false;
 // User user = Provider.of<Auth>(context, listen: false).presentUser;
 
-onContactTap(BuildContext context,String name, String receiverUserID, String receiverPhoneNumber, String downloadUrl, String bio){  
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatScreen(receiverName: name, receiverUserID: receiverUserID, receiverPhoneNumber: receiverPhoneNumber, imageDownloadUrl: downloadUrl, receiverBio: bio,)));
+onContactTap(BuildContext context,String name, String receiverUserID, String receiverPhoneNumber, String downloadUrl, String bio, String token){  
+Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatScreen(receiverName: name, receiverUserID: receiverUserID, receiverPhoneNumber: receiverPhoneNumber, imageDownloadUrl: downloadUrl, receiverBio: bio, receiverToken: token,)));
 }
 
   Widget createListView(BuildContext context, AsyncSnapshot snapshot){
@@ -109,6 +109,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
       itemCount: contactsList.length,
         itemBuilder: (BuildContext context, int index){
         String downloadUrl = 'd';  
+        String token;
         String bio = 'b';
         Map<String,String> getUserIDs = {'randomName' : 'we23e232'};
         Map<String,String> getUserPhoneNumbers = {'few' : 'wewe'};
@@ -124,13 +125,14 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
        getUserPhoneNumbers[contactsList[index].displayName] = doc['phoneNumber'];
        downloadUrl = doc['imageDownloadUrl'];
        bio = doc['bio'];
+       token = doc['fcmToken'];
      }
      counter++;
     });
         
         if(displayContact==true){
          return GestureDetector(
-           onTap: () => onContactTap(context, contactsList[index].displayName, getUserIDs[contactsList[index].displayName], getUserPhoneNumbers[contactsList[index].displayName], downloadUrl, bio),
+           onTap: () => onContactTap(context, contactsList[index].displayName, getUserIDs[contactsList[index].displayName], getUserPhoneNumbers[contactsList[index].displayName], downloadUrl, bio, token),
             child: ListTile(
             leading: (downloadUrl==null) 
             ? CircleAvatar(radius: 22, child: Image.asset('images/blah.png'),) 
