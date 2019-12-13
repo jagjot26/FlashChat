@@ -496,6 +496,16 @@ class MessagesStream extends StatelessWidget {
           var dt = DateTime.parse(timestamp.toDate().toString());
           String time = formatDate(dt, [h, ':', n, am]).toString();
           String date = calculateDate(dt);
+          String string = time;
+          var start = ':';
+          int startIndex = string.indexOf(':');
+          int endIndex;
+           endIndex = string.indexOf('M')-1;
+          if(string.substring(startIndex + start.length, endIndex).length == 1)
+          {
+         string = string.substring(0,startIndex+1) + "0" + string.substring(startIndex+1, string.length);
+         time = string;
+          }
           String dateAndTime = "$date, $time"; 
           final String type = message.data['type'];
           final messageBubble = MessageBubble(
@@ -630,7 +640,7 @@ class MessageBubble extends StatelessWidget {
                       topRight: Radius.circular(30),
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30)),
-            color: isMe == true ? Color(0xffD3E1FF) : Color(0xff5486B4),
+            color: isMe == true ? Color(0xffCEDEFE) : Color(0xff578DBE),
             child:  (type == 'image') 
                   ? Container(
                     padding: EdgeInsets.symmetric(vertical: 6.4, horizontal: 6.4),

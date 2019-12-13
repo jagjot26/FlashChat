@@ -300,7 +300,7 @@ final prefs = await SharedPreferences.getInstance();
                   height: MediaQuery.of(context).size.height*0.415,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('gifs/comet.gif'),
+                      image: AssetImage('images/co.jpg'),
                       fit: BoxFit.fill,
                     ),
                   ),
