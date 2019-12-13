@@ -372,6 +372,9 @@ final prefs = await SharedPreferences.getInstance();
                  height: MediaQuery.of(context).size.height*0.04,
                ),
                Card(
+                 shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
                  color: Color(0xffd4e4ff),
                 margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                 child: ListTile(
@@ -395,6 +398,9 @@ final prefs = await SharedPreferences.getInstance();
                  height: MediaQuery.of(context).size.height*0.002,
                ),
                  Card(
+                   shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(27.0),
+                  ),
                    color: Color(0xffd4e4ff),
                 margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                 child: ListTile(

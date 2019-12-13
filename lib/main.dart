@@ -31,9 +31,11 @@ import 'Drawer screens/about.dart';
 //CHECK IF USER IS ONLINE AND DISPLAY 'online' BELOW THEIR NAME
 //NEXT BUTTON NOT VISIBLE WHEN KEYBOARD IS UP
 void main(){ 
+  WidgetsFlutterBinding.ensureInitialized(); 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, DeviceOrientation.portraitDown
     ]);
+   
   runApp(FlashChat());
   }
 

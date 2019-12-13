@@ -9,6 +9,7 @@ environment:
 dependencies:
   intl: ^0.16.0
   fluttertoast: ^3.1.3
+  url_launcher: ^5.2.7
   firebase_messaging: ^6.0.3
   flutter_cache_manager: ^1.1.3
   cached_network_image: ^1.1.3
@@ -18,7 +19,7 @@ dependencies:
   image_cropper: ^1.1.0
   date_format: ^1.0.8
   transparent_image: ^1.0.0
-  pin_code_text_field: ^1.4.0
+  pin_code_text_field: 1.4.0
   firebase_storage: ^3.0.6
   uuid: ^2.0.2
   image: ^2.1.4
@@ -64,6 +65,12 @@ flutter:
       fonts:
        - asset: fonts/Manjari-Regular.ttf
          weight: 700
+
+    - family: RobotoSlab
+      fonts:
+       - asset: fonts/static/RobotoSlab-Regular.ttf
+         weight: 700     
+          
   uses-material-design: true
 
   assets:

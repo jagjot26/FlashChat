@@ -290,13 +290,16 @@ handleDownloadUrl(String downUrl){
     body: Stack(
       children: <Widget>[
         Container(
-          width: double.infinity,
           decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('images/hilll.png'),
-                      fit: BoxFit.fill,
+                      gradient: LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter, 
+      colors: [ Color(0xff1a2980),  Color(0xff26d0c0)], 
+      tileMode: TileMode.repeated, // repeats the gradient over the canvas
+    ),
                     ),
-                  ),
+          width: double.infinity,
+          
         ),
         Column(
             children: <Widget>[
@@ -612,7 +615,7 @@ class MessageBubble extends StatelessWidget {
             isMe == true ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
              Material(
-            elevation: 6,
+            elevation: 1,
             borderRadius: isMe == true
                   ? BorderRadius.only(
                       topLeft: Radius.circular(30),
@@ -622,7 +625,7 @@ class MessageBubble extends StatelessWidget {
                       topRight: Radius.circular(30),
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30)),
-            color: isMe == true ? Colors.cyan[700] : Colors.blueAccent,
+            color: isMe == true ? Colors.blue[600] : Color(0xff6699cc),
             child:  (type == 'image') 
                   ? Container(
                     padding: EdgeInsets.symmetric(vertical: 6.4, horizontal: 6.4),

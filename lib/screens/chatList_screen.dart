@@ -205,16 +205,14 @@ firebaseMessageConfigure(){
       leading: Icon(Icons.insert_drive_file, color: Colors.blueGrey),
       title: Text('Privacy Policy'),
       onTap: () {
-        // Update the state of the app.
-        // ...
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>PrivacyPolicy()));
       },
         ),
         ListTile(
       leading: Icon(Icons.people, color: Colors.blueGrey,),
       title: Text('Reach Us'),
       onTap: () {
-        // Update the state of the app.
-        // ...
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>ReachUs()));
       },
         ),
         ListTile(
