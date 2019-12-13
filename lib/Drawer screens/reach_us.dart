@@ -23,6 +23,7 @@ class _ReachUsState extends State<ReachUs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Reach Us"),
       ),
@@ -222,52 +223,6 @@ class _ReachUsState extends State<ReachUs> {
         ),
                 ],
               ),
-
-              // GestureDetector(
-              //     onTap: ()=>launchUrl("https://github.com/jagjot26"),
-              //     child: Card(
-              //       shape: RoundedRectangleBorder(
-              //         borderRadius: BorderRadius.circular(35.0),
-              //       ),
-              //     margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              //     child: ListTile(
-              //       leading: Icon(FontAwesomeIcons.githubSquare, color: Colors.blueGrey[800],),
-              //       title: Text("GitHub"),
-              //     ),
-              //     ),
-              // ),
-              //   SizedBox(
-              //     height: MediaQuery.of(context).size.height*0.008,
-              //   ),
-              // GestureDetector(
-              //   onTap: ()=> launchUrl("https://www.instagram.com/jugj0t/"),
-              //     child: Card(
-              //       shape: RoundedRectangleBorder(
-              //         borderRadius: BorderRadius.circular(35.0),
-              //       ),
-              //     margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              //     child: ListTile(
-              //       leading: Icon(FontAwesomeIcons.instagram, color: Color(0xfffb3958),),
-              //       title: Text("Instagram"),
-              //     ),
-              //     ),
-              // ),
-              //   SizedBox(
-              //     height: MediaQuery.of(context).size.height*0.008,
-              //   ),
-              // GestureDetector(
-              //   onTap: ()=> launchUrl("https://www.linkedin.com/in/jagjot-singh-198577182/"),
-              //    child: Card(
-              //      shape: RoundedRectangleBorder(
-              //         borderRadius: BorderRadius.circular(35.0),
-              //       ),
-              //     child: ListTile(
-              //       leading: Icon(FontAwesomeIcons.linkedin, color: Color(0xff2867b2),),
-              //       title: Text("LinkedIn"),
-              //     ),
-              //     margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              //     ),
-              // ),
             ],
           ),
       ),
