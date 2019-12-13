@@ -291,12 +291,17 @@ handleDownloadUrl(String downUrl){
       children: <Widget>[
         Container(
           decoration: BoxDecoration(
-                      gradient: LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter, 
-      colors: [ Color(0xff1a2980),  Color(0xff26d0c0)], 
-      tileMode: TileMode.repeated, // repeats the gradient over the canvas
-    ),
+
+            image: DecorationImage(
+                      image: AssetImage('images/blue.jpg'),
+                      fit: BoxFit.fill,
+                    ),
+    //                   gradient: LinearGradient(
+    //   begin: Alignment.topCenter,
+    //   end: Alignment.bottomCenter, 
+    //   colors: [  Color(0xfff08ebf), Color(0xffb3b3ff), Color(0xffb3ecff)], 
+    //   tileMode: TileMode.repeated, // repeats the gradient over the canvas
+    // ),
                     ),
           width: double.infinity,
           
@@ -625,7 +630,7 @@ class MessageBubble extends StatelessWidget {
                       topRight: Radius.circular(30),
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30)),
-            color: isMe == true ? Colors.blue[600] : Color(0xff6699cc),
+            color: isMe == true ? Color(0xffD3E1FF) : Color(0xff5486B4),
             child:  (type == 'image') 
                   ? Container(
                     padding: EdgeInsets.symmetric(vertical: 6.4, horizontal: 6.4),
@@ -650,12 +655,15 @@ class MessageBubble extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 13, right: 9, top: 13, bottom: 12),
-                  child: Text(
+                  child: isMe ? Text(
+                      message, style: TextStyle(fontSize: 15, color: Color(0xff293d3d),)) : Text(
                       message, style: TextStyle(fontSize: 15, color: Colors.white),),
                 ),
                 Padding(
                   padding: (message.length>=40) ? EdgeInsets.symmetric(horizontal:10.0, vertical: 10) : EdgeInsets.only(left:10.0, right:10, top: 19) ,
-                  child: Text(this.timestamp, style: TextStyle(fontSize: 11, color: Colors.white60),),
+                  child: isMe ? 
+                  Text(this.timestamp, style: TextStyle(fontSize: 11, color: Colors.black54),)
+                   : Text(this.timestamp, style: TextStyle(fontSize: 11, color: Colors.white60),),
                 ),
               ],
             ), 

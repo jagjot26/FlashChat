@@ -55,8 +55,8 @@ class FlashChat extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Flash Chat',
           theme: ThemeData(
-            primaryColor: Colors.blue,
-            accentColor: Colors.blue,
+            primaryColor: Colors.blue[700],
+            accentColor: Colors.blue[700],
             fontFamily: 'Lato',
           ),
           home: auth.isAuth

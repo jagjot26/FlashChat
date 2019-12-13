@@ -244,7 +244,7 @@ firebaseMessageConfigure(){
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => handleContactsButton(context),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).accentColor,
         child: Icon(Icons.message),
       ),
      body: (gotAsyncInfo == true && gotContactsInfo == true) ? Column(
