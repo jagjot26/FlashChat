@@ -217,12 +217,24 @@ handleDownloadUrl(String downUrl){
                                  
                               };
                              
-                             var messageData = {
+                             var messageDataForSender = {
                                'timestamp' : timestamp,
                                'senderID' : loggedInUserID,
                                'message' : downUrl,
                                'exactTime' : timestamp,
                                'type' : 'image',
+                               'notification' : 'off',
+                               'receiverToken' : widget.receiverToken
+                              //  'index' : indexFirestore
+                             };
+
+                             var messageDataForReceiver = {
+                               'timestamp' : timestamp,
+                               'senderID' : loggedInUserID,
+                               'message' : downUrl,
+                               'exactTime' : timestamp,
+                               'type' : 'image',
+                               'notification' : 'on',
                                'receiverToken' : widget.receiverToken
                               //  'index' : indexFirestore
                              };
@@ -233,8 +245,8 @@ handleDownloadUrl(String downUrl){
                               
                               activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).setData(data);
                               activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).setData(data2);
-                              activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageData);
-                              activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageData);
+                              activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageDataForSender);
+                              activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageDataForReceiver);
                                     
 
 
@@ -379,12 +391,25 @@ handleDownloadUrl(String downUrl){
                                     'mostRecentMessage' : message,
                                   };
                                  
-                                 var messageData = {
+                                 var messageDataForSender = {
                                    'timestamp' : timestamp,
                                    'senderID' : loggedInUserID,
                                    'message' : message,
                                    'exactTime' : timestamp,
                                    'type' : 'text-message',
+                                   'notification' : 'off',
+                                   'receiverToken' : widget.receiverToken
+                                  //  'index' : indexFirestore
+                                 };
+
+                                 var messageDataForReceiver = {
+                                   'timestamp' : timestamp,
+                                   'senderID' : loggedInUserID,
+                                   'message' : message,
+                                   'exactTime' : timestamp,
+                                   'type' : 'text-message',
+                                   'notification' : 'on',
+                                   'receiverToken' : widget.receiverToken
                                   //  'index' : indexFirestore
                                  };
 
@@ -394,8 +419,8 @@ handleDownloadUrl(String downUrl){
                                   
                                   activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).setData(data);
                                   activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).setData(data2);
-                                  activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageData);
-                                  activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageData);
+                                  activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageDataForSender);
+                                  activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageDataForReceiver);
                                         
 
 
