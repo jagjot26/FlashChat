@@ -31,8 +31,8 @@ final activeUsersRef = Firestore.instance.collection('activeUsers');
 bool gotAsyncInfo = false;
 bool gotContactsInfo = false;
 bool isUserNameActuallyNumber;
- Iterable<Contact> contacts;
- List<Contact> contactsList;
+ Iterable<Contact> contacts = [];
+ List<Contact> contactsList = [];
  String phoneNumberAtIndex;
  String userName;
  bool getSharedPrefInfo = false;
@@ -260,12 +260,13 @@ openChatScreen(String name, String phoneNumber, String userID, BuildContext cont
 Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio, receiverToken: token,)));
 }
 
-openChatScreenFromSearch(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio, token){
+openChatScreenFromSearch(String name, String phoneNumber, String userID, BuildContext context, String downloadUrl, String bio, String token){
 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ChatScreen(receiverName: name, receiverPhoneNumber: phoneNumber, receiverUserID: userID, imageDownloadUrl: downloadUrl, receiverBio: bio, receiverToken: token,)));
 }
 
 String downloadUrlFinal;
 String bioOfUser;
+String receiverToken;
 class MessagedContactsWidget extends StatelessWidget {
   final String contactName;
   final String phoneNumber;
@@ -361,10 +362,11 @@ class ChatList extends StatelessWidget {
                {
                downloadUrlFinal = dc["imageDownloadUrl"];  
                bioOfUser = dc["bio"];
+               receiverToken = dc['token'];
                }     
               }
           final String receiverID = users.data['receiverID'];
-          final String receiverToken = users.data['fcmToken'];
+          
           String mostRecentText = users.data['mostRecentMessage'];
           if(mostRecentText.length>42){
             mostRecentText = mostRecentText.substring(0,42);

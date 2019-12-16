@@ -125,7 +125,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
        getUserPhoneNumbers[contactsList[index].displayName] = doc['phoneNumber'];
        downloadUrl = doc['imageDownloadUrl'];
        bio = doc['bio'];
-       token = doc['fcmToken'];
+       token = doc['token'];
      }
      counter++;
     });
