@@ -31,8 +31,10 @@ int indexFirestore;
 bool boolGetPhoneNumber = false;
 bool boolGetLoggedInUserID = false;
 String loggedInUserImage;
-
-
+String lastSeenTime = '';
+var lastSeen;
+bool backButtonPressed = false;
+bool online = false;
 class ChatScreen extends StatefulWidget {
 final String receiverName;
 final receiverUserID;
@@ -40,6 +42,7 @@ final String receiverPhoneNumber;
 final String imageDownloadUrl;
 final String receiverBio;
 final String receiverToken;
+
 ChatScreen({this.receiverName, this.receiverUserID, this.receiverPhoneNumber, this.imageDownloadUrl, this.receiverBio, this.receiverToken});
 
 
@@ -57,6 +60,7 @@ String message;
 
 
 setLoggedInUserPhoneNumber() async{
+  backButtonPressed = false;
    boolGetPhoneNumber = false;
    final prefs = await SharedPreferences.getInstance();
    loggedInUserPhoneNumber = prefs.getString("loggedInUserPhoneNumber");
@@ -91,13 +95,54 @@ else{
   }
 
 
+checkLastSeen() async{
 
+DocumentReference documentReference =
+                Firestore.instance.collection("users").document(widget.receiverUserID);
+            documentReference.get().then((datasnapshot) {
+              if (datasnapshot!=null) {
+                var timestamp = datasnapshot.data['lastSeen'];
+          DateTime dt = DateTime.parse(timestamp.toDate().toString());
+          if(DateTime.now().difference(dt).inSeconds<15){
+            setState(() {
+              online = true;
+            });
+          }
+          else{
+            String date = calculateDate(dt);
+            String time = formatDate(dt, [h, ':', n, am]).toString();
+             String string = time;
+          var start = ':';
+          int startIndex = string.indexOf(':');
+          int endIndex;
+           endIndex = string.indexOf('M')-1;
+          if(string.substring(startIndex + start.length, endIndex).length == 1)
+          {
+         string = string.substring(0,startIndex+1) + "0" + string.substring(startIndex+1, string.length);
+         time = string;
+          }
+            setState(() {
+              lastSeenTime = "$date at $time";
+              online = false;
+            });
+         }            
+          }
+              else{
+                print("No such user");
+              }
+            });
+}
+
+recurringFunction(){
+  const oneSec = const Duration(seconds:6);
+  new Timer.periodic(oneSec, (Timer t) => (backButtonPressed==true) ? t.cancel() : checkLastSeen());
+}
 
 @override
   void initState() {
-   
     setLoggedInUserPhoneNumber();
     setLoggedInUserID();
+    recurringFunction();
     super.initState();
   }
 
@@ -256,200 +301,216 @@ handleDownloadUrl(String downUrl){
                             
 }
 
-
+ Future<bool> setBackButtonPressedTrue() async{
+  backButtonPressed = true;
+  return true;
+}
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-              preferredSize: Size.fromHeight(56),
-              child: Builder(
-          builder: (BuildContext context){
-          return GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEditForChatScreen(profileImageUrl: widget.imageDownloadUrl, userName: widget.receiverName, about: widget.receiverBio, phoneNumber: widget.receiverPhoneNumber,)));
-                      },
-                      child: AppBar(
-                        backgroundColor: Theme.of(context).accentColor,
-            leading: Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
-              child : (widget.imageDownloadUrl == null) 
-              ? CircleAvatar(child: Image.asset('images/blah.png'),) 
-              : CircleAvatar(
+    return WillPopScope(
+          onWillPop: setBackButtonPressedTrue,
+          child: Scaffold(
+        appBar: PreferredSize(
+                preferredSize: Size.fromHeight(56),
+                child: Builder(
+            builder: (BuildContext context){
+            return GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEditForChatScreen(profileImageUrl: widget.imageDownloadUrl, userName: widget.receiverName, about: widget.receiverBio, phoneNumber: widget.receiverPhoneNumber,)));
+                        },
+                        child: AppBar(
+                          backgroundColor: Theme.of(context).accentColor,
+              leading: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
+                child : (widget.imageDownloadUrl == null) 
+                ? CircleAvatar(child: Image.asset('images/blah.png'),) 
+                : CircleAvatar(
    backgroundColor: Colors.blue,
    radius: 23,
    child: ClipOval(
-    child: CachedNetworkImage(
-      fadeInCurve: Curves.easeIn,
-      fadeOutCurve: Curves.easeOut,
-      imageUrl: widget.imageDownloadUrl,
-      placeholder: (context, url) => spinkit(),
-      errorWidget: (context, url, error) => new Icon(Icons.error),
-    ),
+      child: CachedNetworkImage(
+        fadeInCurve: Curves.easeIn,
+        fadeOutCurve: Curves.easeOut,
+        imageUrl: widget.imageDownloadUrl,
+        placeholder: (context, url) => spinkit(),
+        errorWidget: (context, url, error) => new Icon(Icons.error),
+      ),
    ),
  ), 
-            ),
-            title: (widget.receiverName == 'defaultName') 
-            ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left)
-             : Text(widget.receiverName, textAlign: TextAlign.left),
+              ),
+              title: Padding(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.008),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    (widget.receiverName == 'defaultName') 
+                ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left)
+                 : Text(widget.receiverName, textAlign: TextAlign.left),
+                 SizedBox(height: MediaQuery.of(context).size.height*0.002,),
+                 (online==true) ? Text('Online', textAlign: TextAlign.left, style: TextStyle(color: Colors.white70, fontSize: 15.7),) : Text(lastSeenTime, textAlign: TextAlign.left, style: TextStyle(color: Colors.white70, fontSize: 15.7, fontWeight: FontWeight.w400),),  
+                  ],
+                ),
+              ),
+          ),
+            );
+          }
+          ),
         ),
-          );
-        }
-        ),
-      ),
-      
-      
-    body: Stack(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
+        
+        
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
 
-            image: DecorationImage(
-                      image: AssetImage('images/blue.jpg'),
-                      fit: BoxFit.fill,
-                    ),
-    //                   gradient: LinearGradient(
-    //   begin: Alignment.topCenter,
-    //   end: Alignment.bottomCenter, 
-    //   colors: [  Color(0xfff08ebf), Color(0xffb3b3ff), Color(0xffb3ecff)], 
-    //   tileMode: TileMode.repeated, // repeats the gradient over the canvas
-    // ),
-                    ),
-          width: double.infinity,
-          
-        ),
-        Column(
-            children: <Widget>[
-             (boolGetLoggedInUserID == true && boolGetPhoneNumber == true ) ? Expanded(child: MessagesStream()) : Expanded(child: circularProgress()),
-             Container(
-               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-               child: Row(
-                 children: <Widget>[
-                      Expanded(
-                          child: TextField(
-                          onChanged: (val){
-                            setState(() {
-                              message = val;
-                              if(val.length==0){
-                                isTextFieldEmpty = true;
-                              }
-                               if(val.length>0){
-                                  isTextFieldEmpty = false; 
-                               }                       
-                                                      
-                            });
-                          },
-                          controller: tcontroller,
-                          decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            filled: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            hintText: 'Type your message',
-                            suffixIcon: GestureDetector(
-                              onTap: ()=>handleSelectImage(context),
-                              child:Icon(Icons.insert_photo, color: Colors.black45,)
-                              ),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(32),),
-                            borderSide: BorderSide(color: Colors.grey[400]),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(32),),
+              image: DecorationImage(
+                        image: AssetImage('images/blue.jpg'),
+                        fit: BoxFit.fill,
+                      ),
+      //                   gradient: LinearGradient(
+      //   begin: Alignment.topCenter,
+      //   end: Alignment.bottomCenter, 
+      //   colors: [  Color(0xfff08ebf), Color(0xffb3b3ff), Color(0xffb3ecff)], 
+      //   tileMode: TileMode.repeated, // repeats the gradient over the canvas
+      // ),
+                      ),
+            width: double.infinity,
+            
+          ),
+          Column(
+              children: <Widget>[
+               (boolGetLoggedInUserID == true && boolGetPhoneNumber == true ) ? Expanded(child: MessagesStream()) : Expanded(child: circularProgress()),
+               Container(
+                 padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                 child: Row(
+                   children: <Widget>[
+                        Expanded(
+                            child: TextField(
+                            onChanged: (val){
+                              setState(() {
+                                message = val;
+                                if(val.length==0){
+                                  isTextFieldEmpty = true;
+                                }
+                                 if(val.length>0){
+                                    isTextFieldEmpty = false; 
+                                 }                       
+                                                        
+                              });
+                            },
+                            controller: tcontroller,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              hintText: 'Type your message',
+                              suffixIcon: GestureDetector(
+                                onTap: ()=>handleSelectImage(context),
+                                child:Icon(Icons.insert_photo, color: Colors.black45,)
+                                ),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(32),),
                               borderSide: BorderSide(color: Colors.grey[400]),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(32),),            
-                              borderSide: BorderSide(color: Colors.grey[400]),           
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(32),),
+                                borderSide: BorderSide(color: Colors.grey[400]),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(32),),            
+                                borderSide: BorderSide(color: Colors.grey[400]),           
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width*0.0090,
-                      ),
-                      RawMaterialButton(
-                                onPressed: () {
-                                  timestamp =  DateTime.now();
-                                // indexFirestore += 1;  
-                                if(tcontroller.text.length>0){
-                                  setState(() {
-                                     tcontroller.clear();
-                                     isTextFieldEmpty = true;
-                                  });                             
-                                  var data = {
-                                    'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
-                                    'receiverID' : widget.receiverUserID,
-                                    'phoneNumber' : widget.receiverPhoneNumber,
-                                    'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
-                                    'mostRecentMessage' : message,
-                                  };
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width*0.0090,
+                        ),
+                        RawMaterialButton(
+                                  onPressed: () {
+                                    timestamp =  DateTime.now();
+                                  // indexFirestore += 1;  
+                                  if(tcontroller.text.length>0){
+                                    setState(() {
+                                       tcontroller.clear();
+                                       isTextFieldEmpty = true;
+                                    });                             
+                                    var data = {
+                                      'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                      'receiverID' : widget.receiverUserID,
+                                      'phoneNumber' : widget.receiverPhoneNumber,
+                                      'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
+                                      'mostRecentMessage' : message,
+                                    };
 
-                                  var data2 = {
-                                    'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
-                                    'receiverID' : loggedInUserID,
-                                    'phoneNumber' : loggedInUserPhoneNumber,
-                                    'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
-                                    'mostRecentMessage' : message,
-                                  };
-                                 
-                                 var messageDataForSender = {
-                                   'timestamp' : timestamp,
-                                   'senderID' : loggedInUserID,
-                                   'message' : message,
-                                   'exactTime' : timestamp,
-                                   'type' : 'text-message',
-                                   'notification' : 'off',
-                                   'receiverToken' : widget.receiverToken
-                                  //  'index' : indexFirestore
-                                 };
+                                    var data2 = {
+                                      'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                      'receiverID' : loggedInUserID,
+                                      'phoneNumber' : loggedInUserPhoneNumber,
+                                      'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
+                                      'mostRecentMessage' : message,
+                                    };
+                                   
+                                   var messageDataForSender = {
+                                     'timestamp' : timestamp,
+                                     'senderID' : loggedInUserID,
+                                     'message' : message,
+                                     'exactTime' : timestamp,
+                                     'type' : 'text-message',
+                                     'notification' : 'off',
+                                     'receiverToken' : widget.receiverToken
+                                    //  'index' : indexFirestore
+                                   };
 
-                                 var messageDataForReceiver = {
-                                   'timestamp' : timestamp,
-                                   'senderID' : loggedInUserID,
-                                   'message' : message,
-                                   'exactTime' : timestamp,
-                                   'type' : 'text-message',
-                                   'notification' : 'on',
-                                   'receiverToken' : widget.receiverToken
-                                  //  'index' : indexFirestore
-                                 };
+                                   var messageDataForReceiver = {
+                                     'timestamp' : timestamp,
+                                     'senderID' : loggedInUserID,
+                                     'message' : message,
+                                     'exactTime' : timestamp,
+                                     'type' : 'text-message',
+                                     'notification' : 'on',
+                                     'receiverToken' : widget.receiverToken
+                                    //  'index' : indexFirestore
+                                   };
 
-                                //  var indexData = {
-                                //    'index' : indexFirestore
-                                //  };
+                                  //  var indexData = {
+                                  //    'index' : indexFirestore
+                                  //  };
+                                    
+                                    activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).setData(data);
+                                    activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).setData(data2);
+                                    activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageDataForSender);
+                                    activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageDataForReceiver);
+                                          
+
+
+                                  }  
                                   
-                                  activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).setData(data);
-                                  activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).setData(data2);
-                                  activeUsersRef.document(loggedInUserID).collection('messagedUsers').document(widget.receiverUserID).collection('messages').add(messageDataForSender);
-                                  activeUsersRef.document(widget.receiverUserID).collection('messagedUsers').document(loggedInUserID).collection('messages').add(messageDataForReceiver);
-                                        
-
-
-                                }  
-                                
-                                downloadUrlBool = false;
-                                },
-                                //RawMaterialButton widget class is used for building buttons from scratch
-                                child: Icon(
-                                  Icons.send,
-                                  color: (isTextFieldEmpty == false) ? Colors.blueAccent : Colors.grey,
-                                ), //Icon widget requires an either Icons.someicon or FontAwesomeIcons.someicon value
-                                constraints:
-                                BoxConstraints.tightFor(width: 43.5, height: 43.5),
-                                shape: CircleBorder(),
-                                fillColor: Colors.black,
-                                elevation: 0.0,
-                              ),
-                    ],
+                                  downloadUrlBool = false;
+                                  },
+                                  //RawMaterialButton widget class is used for building buttons from scratch
+                                  child: Icon(
+                                    Icons.send,
+                                    color: (isTextFieldEmpty == false) ? Colors.blueAccent : Colors.grey,
+                                  ), //Icon widget requires an either Icons.someicon or FontAwesomeIcons.someicon value
+                                  constraints:
+                                  BoxConstraints.tightFor(width: 43.5, height: 43.5),
+                                  shape: CircleBorder(),
+                                  fillColor: Colors.black,
+                                  elevation: 0.0,
+                                ),
+                      ],
+                 ),
                ),
-             ),
-             SizedBox(
-               height: 4,
-             ),
-            ],
-          ),
-      ],
-    ), 
-       );
+               SizedBox(
+                 height: 4,
+               ),
+              ],
+            ),
+        ],
+      ), 
+         ),
+    );
   }
 }
 

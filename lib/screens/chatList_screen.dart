@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' as prefix0;
 import 'package:flash_chat/progress.dart';
@@ -128,6 +129,24 @@ firebaseMessageConfigure(){
 //      },
 //    );
 }
+String loggedInUid;
+updateLastSeen() async{
+  
+if(loggedInUid==null){
+ await Future.delayed(Duration.zero, (){
+   loggedInUid = Provider.of<Auth>(context, listen: false).uidSharedPref;
+ });
+}
+
+Firestore.instance.collection('users').document(loggedInUid).updateData({"lastSeen": DateTime.now()});
+
+}
+
+recurringFunction(){
+  const oneSec = const Duration(seconds:7);
+  new Timer.periodic(oneSec, (Timer t) => updateLastSeen());
+  
+}
 
 @override
   void initState() {
@@ -136,7 +155,7 @@ firebaseMessageConfigure(){
     getContacts();
    setLoggedInUserID();
    firebaseMessageConfigure();
-   
+   recurringFunction();
   
   }
 
