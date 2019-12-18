@@ -132,9 +132,9 @@ if(loggedInUid==null){
    loggedInUid = Provider.of<Auth>(context, listen: false).uidSharedPref;
  });
 }
-
+if(loggedInUid!=null){
 Firestore.instance.collection('users').document(loggedInUid).updateData({"lastSeen": DateTime.now()});
-
+}
 }
 
 recurringFunction(){
