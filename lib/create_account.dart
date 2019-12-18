@@ -5,13 +5,7 @@ import 'country.dart';
 import 'package:country_icons/country_icons.dart';
 import 'dart:core';
 import 'newCountryList.dart';
-import 'home_screen.dart';
 import 'dart:async';
-import 'screens/chatList_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:provider/provider.dart';
-import 'provider/auth.dart';
-import 'edit_profile.dart';
 import 'screens/otp_screen.dart';
 
 

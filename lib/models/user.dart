@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flash_chat/home_screen.dart';
+
 
 class User {
   final String id;

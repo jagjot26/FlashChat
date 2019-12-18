@@ -1,4 +1,3 @@
-import 'package:flash_chat/progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/chatList_screen.dart';
@@ -10,12 +9,8 @@ import 'dart:async';
 import 'screens/splash-screen.dart';
 import 'edit_profile.dart';
 import 'screens/contacts_screen.dart';
-import 'models/contacts_list.dart';
 import 'screens/otp_screen.dart';
-import 'screens/tempScreen.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
-import 'Drawer screens/profile_edit.dart';
-import 'Drawer screens/about.dart';
+
 
 
 // handle invalid verification code error
@@ -46,9 +41,6 @@ class FlashChat extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: Auth(),
-        ),
-        ChangeNotifierProvider.value(
-          value: Contacts(),
         ),
       ],
       child: Consumer<Auth>(

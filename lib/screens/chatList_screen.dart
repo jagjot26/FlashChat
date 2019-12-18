@@ -1,11 +1,8 @@
 import 'dart:core';
-import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' as prefix0;
 import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'contacts_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,8 +18,6 @@ import 'package:flash_chat/Drawer screens/privacypolicy.dart';
 import 'package:flash_chat/Drawer screens/about.dart';
 import 'package:flash_chat/Drawer screens/reach_us.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flash_chat/Drawer screens/profile_edit.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 String loggedInUserID;

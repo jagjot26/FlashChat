@@ -1,19 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flash_chat/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'dart:core';
 import 'package:flash_chat/progress.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'chat_screen.dart';
-import 'package:flash_chat/provider/auth.dart';
-import 'package:flash_chat/models/user.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
+
 
 
 final usersRef = Firestore.instance.collection('users');
@@ -118,7 +113,9 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
         var listOfDocuments = qs.documents;
     listOfDocuments?.forEach((doc){
      if((doc["phoneNumber"] == phoneNumberAtIndex.split(" ").join("") && doc["phoneNumber"] != loggedInUserPhoneNumber.split(" ").join("")) 
-       ||  (doc["phoneNumber"].substring(3) == phoneNumberAtIndex.split(" ").join("") && doc["phoneNumber"].substring(3) != loggedInUserPhoneNumber.split(" ").join("")))
+       ||  (doc["phoneNumber"].substring(3) == phoneNumberAtIndex.split(" ").join("") && doc["phoneNumber"].substring(3) != loggedInUserPhoneNumber.split(" ").join(""))
+       ||  (doc["phoneNumber"] == phoneNumberAtIndex.split("-").join("") && doc["phoneNumber"] != loggedInUserPhoneNumber.split(" ").join(""))  
+       || (doc["phoneNumber"].substring(3) == phoneNumberAtIndex.split("-").join("") && doc["phoneNumber"].substring(3) != loggedInUserPhoneNumber.split(" ").join("")) )
      {
        this.displayContact = true;
        getUserIDs[contactsList[index].displayName] = doc["id"]; 

@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flash_chat/edit_profile.dart';
 import 'package:flash_chat/progress.dart';
-import 'package:flash_chat/screens/chatList_screen.dart';
 import 'package:flash_chat/screens/fullsize_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +17,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flash_chat/profileEditForChatScreen.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 String loggedInUserID;
 String loggedInUserPhoneNumber;
@@ -32,6 +31,7 @@ bool boolGetPhoneNumber = false;
 bool boolGetLoggedInUserID = false;
 String loggedInUserImage;
 String lastSeenTime = '';
+String lst = '';
 var lastSeen;
 bool backButtonPressed = false;
 bool online = false;
@@ -103,7 +103,7 @@ DocumentReference documentReference =
               if (datasnapshot!=null) {
                 var timestamp = datasnapshot.data['lastSeen'];
           DateTime dt = DateTime.parse(timestamp.toDate().toString());
-          if(DateTime.now().difference(dt).inSeconds<15){
+          if(DateTime.now().difference(dt).inSeconds<15 && this.mounted){
             setState(() {
               online = true;
             });
@@ -120,11 +120,14 @@ DocumentReference documentReference =
           {
          string = string.substring(0,startIndex+1) + "0" + string.substring(startIndex+1, string.length);
          time = string;
+         lst = "$date at $time";
           }
+          if(this.mounted){
             setState(() {
               lastSeenTime = "$date at $time";
               online = false;
             });
+          }
          }            
           }
               else{
@@ -140,6 +143,10 @@ recurringFunction(){
 
 @override
   void initState() {
+      lastSeenTime = '';
+    lst='';
+   
+    backButtonPressed = false;
     setLoggedInUserPhoneNumber();
     setLoggedInUserID();
     recurringFunction();
@@ -306,13 +313,22 @@ handleDownloadUrl(String downUrl){
   return true;
 }
 
+@override
+  void dispose() {
+    online = false;
+      lastSeenTime = '';
+      lst = '';
+      backButtonPressed = true;  
+     super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
           onWillPop: setBackButtonPressedTrue,
           child: Scaffold(
         appBar: PreferredSize(
-                preferredSize: Size.fromHeight(56),
+                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.077),
                 child: Builder(
             builder: (BuildContext context){
             return GestureDetector(
@@ -322,7 +338,7 @@ handleDownloadUrl(String downUrl){
                         child: AppBar(
                           backgroundColor: Theme.of(context).accentColor,
               leading: Padding(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.0086),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.007),
                 child : (widget.imageDownloadUrl == null) 
                 ? CircleAvatar(child: Image.asset('images/blah.png'),) 
                 : CircleAvatar(
@@ -340,17 +356,20 @@ handleDownloadUrl(String downUrl){
  ), 
               ),
               title: Padding(
-                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.008),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.008),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    (widget.receiverName == 'defaultName') 
-                ? Text(widget.receiverPhoneNumber, textAlign: TextAlign.left)
-                 : Text(widget.receiverName, textAlign: TextAlign.left),
-                 SizedBox(height: MediaQuery.of(context).size.height*0.002,),
-                 (online==true) ? Text('Online', textAlign: TextAlign.left, style: TextStyle(color: Colors.white70, fontSize: 15.7),) : Text(lastSeenTime, textAlign: TextAlign.left, style: TextStyle(color: Colors.white70, fontSize: 15.7, fontWeight: FontWeight.w400),),  
-                  ],
-                ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Flexible(                      
+                        child: (widget.receiverName == 'defaultName') 
+                  ? AutoSizeText(widget.receiverPhoneNumber, textAlign: TextAlign.left, style: TextStyle(fontSize: 18),)
+                   : AutoSizeText(widget.receiverName, textAlign: TextAlign.left, style: TextStyle(fontSize: 18),),),
+                   SizedBox(height: MediaQuery.of(context).size.height*0.0008,),
+                   Flexible
+                   (                   
+                     child:(online==true) ? AutoSizeText('Online', textAlign: TextAlign.left, style: TextStyle(color: Colors.white70, fontSize: 13.5),) : AutoSizeText(lastSeenTime, textAlign: TextAlign.left, style: TextStyle(color: Colors.white70, fontSize: 13.5, fontWeight: FontWeight.w500),)),  
+                    ],
+                  ),
               ),
           ),
             );
