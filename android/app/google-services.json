@@ -15,11 +15,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "601784083513-lhrm546dlemq64lghicrregr2men3u6q.apps.googleusercontent.com",
+          "client_id": "601784083513-92r1r76g9p73u13qbjc4dq6ovtu2t2ib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.jugjot.flash_chat",
+            "certificate_hash": "e1f476a960320fd84cf32dc80d9643c432f0f503"
+          }
+        },
+        {
+          "client_id": "601784083513-t68ao84q0iabk2oq1q6mgmjp60e8kjgv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "co.jugjot.flash_chat",
             "certificate_hash": "54ff8c78c40b1c354ddfdb06f4145842d9ebe3fc"
+          }
+        },
+        {
+          "client_id": "601784083513-i2p30cl5e8p8tj31meumcos5t6vfc541.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.jugjot.flash_chat",
+            "certificate_hash": "ee6343c552bba031cd18a04b2142af7b5e61d982"
           }
         },
         {

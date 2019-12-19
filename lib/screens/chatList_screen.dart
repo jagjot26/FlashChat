@@ -112,17 +112,17 @@ PermissionStatus permissionStatus = await PermissionHandler().checkPermissionSta
 }
 
 firebaseMessageConfigure(){
-// firemessage.configure(
-//      onLaunch: (Map<String,dynamic> msg) async{
-//        print("On Launch called");
-//      },
-//      onResume: (Map<String,dynamic> msg) async{
-//        print("On Resume called");
-//      },
-//      onMessage: (Map<String,dynamic> msg) async{
-//        print("On Message called");
-//      },
-//    );
+firemessage.configure(
+     onLaunch: (Map<String,dynamic> msg) async{
+       print("On Launch called");
+     },
+     onResume: (Map<String,dynamic> msg) async{
+       print("On Resume called");
+     },
+     onMessage: (Map<String,dynamic> msg) async{
+       print("On Message called");
+     },
+   );
 }
 String loggedInUid;
 updateLastSeen() async{
@@ -388,6 +388,7 @@ class ChatList extends StatelessWidget {
           for(int index = 0; index < contactsList.length; index++){
             phoneNumberAtIndex = (contactsList[index].phones.isEmpty) ? ' ' : contactsList[index].phones.firstWhere((anElement) => anElement.value != null).value;
             String trimmedPhoneNumber = phoneNumberAtIndex.split(" ").join("");
+            trimmedPhoneNumber = trimmedPhoneNumber.split("-").join("");
             if(userPhoneNumber == trimmedPhoneNumber || userPhoneNumber.substring(3) == trimmedPhoneNumber){
               userName = contactsList[index].displayName;
                if(contactedUserNames.length!=0){
