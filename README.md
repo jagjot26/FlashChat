@@ -1,5 +1,6 @@
 # FlashChat
 
+### FlashChat is a simple, one-to-one texting application that allows users to communicate free of cost(provided that they have data conn.) without any limitations. Users can send and receive messages, edit their profile pictures, change their bios, and do a bunch of other stuff.
 
 <dl>
 <dt> OTP-based Sign In </dt>
