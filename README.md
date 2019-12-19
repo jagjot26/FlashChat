@@ -2,22 +2,21 @@
 
 
 <dl>
-<dt> Registration page </dt>
-<dd>In this app, we’ll have users to sign in with a phone number. After registering, users can create their own profiles where they can add personal information and a profile photo.</dd>
+<dt> OTP-based Sign In </dt>
+<dd>After entering the phone number, the user will be asked to enter an OTP, which in most cases, is automatically detected by the app, and the sign in process proceeds to the next step.</dd>
 
 <dt>Contact integration</dt>
 <dd>Once registered, the users can import their contacts, provided that those contacts have already registered. </dd>
 
 <dt>Profile customization</dt>
-<dd>Users can change their names and choose an avatar photo from the camera roll or by taking a photo instantly. 
-Also, the users can change their bio, as and when they want. </dd>
+<dd>Users can change their bios and choose an avatar photo from the camera roll or by taking a photo instantly. </dd>
 
 <dt>Messaging</dt>
 <dd>This is the most essential feature of this app.
 So, this app can handle one to one messaging without any slouch. Also, you can send images as well.</dd>
 
 <dt>Push notifications</dt>
-<dd>These serve as a the direct line of communication between the messenger and its users. These handy messages keep users active within the app and inform them when new messages have arrived or someone comes online.</dd>
+<dd>These notifications inform users about newly arrived messages when the app is running in the background.</dd>
 </dl>
 
 
