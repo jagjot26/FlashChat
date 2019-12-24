@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart' as prefix0;
 import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'contacts_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -62,12 +63,22 @@ String loggedInUserName;
 String loggedInUserBio;
 
 setLoggedInUserInfo() async{
+//   String firstTime = prefs.getString("firstTime");
+
+// if(firstTime == "no"){
+//     Fluttertoast.showToast(msg: "Welcome to FlashChat! If you had any old chats, they will be restored on the next app launch",  textColor: Colors.white, backgroundColor: Colors.black54);
+//     prefs.setString("firstTime", "yes");
+//   }
    final prefs = await SharedPreferences.getInstance();
    loggedInUserPhoneNumber = prefs.getString("loggedInUserPhoneNumber");
    loggedInUserImgUrl = prefs.getString("loggedInUserImage");
    loggedInUserName = prefs.getString("loggedInUserName");
    loggedInUserBio = prefs.getString("loggedInUserBio");
-   getSharedPrefInfo = true;
+   loggedInUserID = prefs.getString("uid");
+   setState(() {
+      getSharedPrefInfo = true;
+     gotAsyncInfo = true;
+   });  
    
 }
 
@@ -83,19 +94,6 @@ setLoggedInUserInfo() async{
       Navigator.pushNamed(context, ContactsScreen.id);
     }
   }
-
-void setLoggedInUserID() async{
-// final prefs = await SharedPreferences.getInstance();
-//     loggedInUserID = prefs.getString("uid");
-
- await Future.delayed(Duration.zero, (){
-   loggedInUserID = Provider.of<Auth>(context, listen: false).uidSharedPref;
- });
- 
- setState(() {
-   gotAsyncInfo = true;
- });
-}
 
 getContacts() async{
 PermissionStatus permissionStatus = await PermissionHandler().checkPermissionStatus(PermissionGroup.contacts);
@@ -143,12 +141,12 @@ recurringFunction(){
   
 }
 
+
 @override
   void initState() {
     super.initState();
     setLoggedInUserInfo();
     getContacts();
-   setLoggedInUserID();
    firebaseMessageConfigure();
    recurringFunction();
   

@@ -56,7 +56,7 @@ searchForUidViaPhoneNumberAndUpdateProfilePic(String downloadUrl) async{
         "phoneNumber": widget.phoneNumber,
         "timestamp": timestamp,
         "imageDownloadUrl" : downloadUrl,
-        "fcmToken" : this.fcmToken
+        "token" : this.fcmToken
       });    
      }     
     }
@@ -78,7 +78,7 @@ handleBioChangerButton() async{
         "phoneNumber": widget.phoneNumber,
         "timestamp": timestamp,
         "imageDownloadUrl" : (newDownloadUrl==" ") ? widget.profileImageUrl : newDownloadUrl,
-        "fcmToken" : this.fcmToken
+        "token" : this.fcmToken
       });    
      }     
     }

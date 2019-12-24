@@ -122,6 +122,7 @@ class Auth with ChangeNotifier {
     
     
     prefs2.setString("uid", user.uid);
+    
       
       doc = await usersRef.document(user.uid).get();
     
@@ -139,6 +140,7 @@ class Auth with ChangeNotifier {
     if(userExistsInFirebase == true){
       prefs5.setString("recentlyLoggedInUser","exists");
     }
+    prefs5.setString("firstTime", "no");
     presentUser = User.fromDocument(doc);
   }
 
