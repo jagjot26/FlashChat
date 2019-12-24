@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'dart:core';
 import 'package:flash_chat/progress.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'chat_screen.dart';
@@ -91,8 +92,13 @@ fetchUsersRef() async{
 bool displayContact = false;
 // User user = Provider.of<Auth>(context, listen: false).presentUser;
 
-onContactTap(BuildContext context,String name, String receiverUserID, String receiverPhoneNumber, String downloadUrl, String bio, String token){  
-Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatScreen(receiverName: name, receiverUserID: receiverUserID, receiverPhoneNumber: receiverPhoneNumber, imageDownloadUrl: downloadUrl, receiverBio: bio, receiverToken: token,)));
+onContactTap(BuildContext context,String name, String receiverUserID, String receiverPhoneNumber, String downloadUrl, String bio, String token){ 
+ if(receiverUserID == null || token == '' || receiverPhoneNumber==null){
+    Fluttertoast.showToast(msg: "Ensure that you have a working internet connection and refresh contacts to try again",  textColor: Colors.white, backgroundColor: Colors.black54);
+ }  
+ else{  
+ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatScreen(receiverName: name, receiverUserID: receiverUserID, receiverPhoneNumber: receiverPhoneNumber, imageDownloadUrl: downloadUrl, receiverBio: bio, receiverToken: token,)));
+ }
 }
 
   Widget createListView(BuildContext context, AsyncSnapshot snapshot){
@@ -104,7 +110,7 @@ Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ChatSc
       itemCount: contactsList.length,
         itemBuilder: (BuildContext context, int index){
         String downloadUrl = 'd';  
-        String token;
+        String token='';
         String bio = 'b';
         Map<String,String> getUserIDs = {'randomName' : 'we23e232'};
         Map<String,String> getUserPhoneNumbers = {'few' : 'wewe'};

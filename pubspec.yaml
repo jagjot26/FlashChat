@@ -1,7 +1,7 @@
 name: flash_chat
 description: A new Flutter application.
 
-version: 1.0.0+1
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -70,7 +70,13 @@ flutter:
     - family: RobotoSlab
       fonts:
        - asset: fonts/static/RobotoSlab-Regular.ttf
-         weight: 700     
+         weight: 700                
+         
+    - family: Nunito
+      fonts:
+       - asset: fonts/Nunito/Nunito-ExtraBold.ttf
+         weight: 700         
+
           
   uses-material-design: true
 

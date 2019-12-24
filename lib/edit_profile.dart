@@ -19,7 +19,7 @@ import 'package:image_cropper/image_cropper.dart';
 
 var fcmToken;
 String downloadUrl;
-String displayName;
+String displayName = '';
 bool isLoading = false;
 bool isImageLoading = false;
 class EditProfile extends StatefulWidget {
@@ -210,7 +210,17 @@ uploadImageAndGetDownloadUrl() async{
                 Flexible(
                   fit: FlexFit.loose,
                   child: GestureDetector(
-                    onTap: ()=>handleNext(context),
+                    onTap: (){
+                       if(displayName == ''){
+                        Fluttertoast.showToast(msg: "Enter your name before proceeding",  textColor: Colors.white, backgroundColor: Colors.black54);
+                        }
+                        else if(displayName.length>14){
+                        Fluttertoast.showToast(msg: "Your name can only have upto 14 characters",  textColor: Colors.white, backgroundColor: Colors.black54);            
+                        }
+                      else{
+                         handleNext(context);
+                        }
+                      },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       decoration: BoxDecoration(

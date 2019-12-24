@@ -120,6 +120,8 @@ class Auth with ChangeNotifier {
         "token": token,
       });    
     
+    
+    prefs2.setString("uid", user.uid);
       
       doc = await usersRef.document(user.uid).get();
     

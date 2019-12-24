@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flash_chat/progress.dart';
 import 'package:flash_chat/screens/fullsize_image.dart';
@@ -147,7 +148,11 @@ handleEditBio(BuildContext ctx){
                     bottom: MediaQuery.of(context).viewInsets.bottom),
               child: RawMaterialButton(
         onPressed: (){
-         if(isTextFieldEmpty == false && newBio.length>0){
+          if(newBio.length>70)
+          {
+            Fluttertoast.showToast(msg: "Bio too long, your bio can only be upto 70 characters long",  textColor: Colors.white, backgroundColor: Colors.black54);
+          }
+         if(isTextFieldEmpty == false && newBio.length>0 && newBio.length<=70){
            handleBioChangerButton();
            Navigator.pop(context);
          }             
@@ -263,7 +268,10 @@ handleEditBio(BuildContext ctx){
 
 
 fullScreenImage(BuildContext context){
-  if(widget.profileImageUrl!=null){
+  if(isImageDownloading == true || newDownloadUrl != " "){
+     Navigator.push(context, MaterialPageRoute(builder: (context) => FullSizeImage(downloadUrl: newDownloadUrl,)));
+  }
+  else if(widget.profileImageUrl!=null && newDownloadUrl == " "){
     Navigator.push(context, MaterialPageRoute(builder: (context) => FullSizeImage(downloadUrl: widget.profileImageUrl,)));
 }
 else{
@@ -300,7 +308,7 @@ final prefs = await SharedPreferences.getInstance();
                   height: MediaQuery.of(context).size.height*0.415,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('images/co.jpg'),
+                      image: AssetImage('images/edit.jpg'),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -329,7 +337,7 @@ final prefs = await SharedPreferences.getInstance();
                  Container(
                 alignment: Alignment.topCenter,
                 child: (isImageDownloading==true) ? 
-                 CircleAvatar(
+                 GestureDetector(onTap:()=>fullScreenImage(context), child: CircleAvatar(
    backgroundColor: Colors.blue,
    radius: MediaQuery.of(context).size.width*0.18,
    child: ClipOval(
@@ -341,6 +349,7 @@ final prefs = await SharedPreferences.getInstance();
       errorWidget: (context, url, error) => new Icon(Icons.error),
     ),
    ),
+ ),
  )
                  :  (widget.profileImageUrl == 'NoImage' || widget.profileImageUrl == null) 
                  ? GestureDetector(onTap: ()=>fullScreenImage(context), child:CircleAvatar(child: Image.asset('images/blah.png'), radius: MediaQuery.of(context).size.width*0.18,)) 
@@ -359,13 +368,13 @@ final prefs = await SharedPreferences.getInstance();
  ),),
                ),
                SizedBox(
-                 height: MediaQuery.of(context).size.height*0.014,
+                 height: MediaQuery.of(context).size.height*0.016,
                ),
-               Text(widget.userName, style: TextStyle(
-                 fontFamily: 'Pacifico',
-                 fontSize: 34,
+               AutoSizeText(widget.userName, style: TextStyle(
+                 fontFamily: 'Nunito',
+                 fontSize: (widget.userName.length>8) ? 32 : 36,
                  fontWeight: FontWeight.w500,
-                 color: Color(0xffc9f0ff),
+                 color: Color(0xffb3ecff),
                ),
                ),
                SizedBox(
@@ -435,7 +444,7 @@ final prefs = await SharedPreferences.getInstance();
            Column(
             children: <Widget>[
               SizedBox(
-                height: MediaQuery.of(context).size.height*0.45,
+                height: MediaQuery.of(context).size.height*0.44,
               ),
               Container(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.53),

@@ -19,7 +19,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flash_chat/profileEditForChatScreen.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-String loggedInUserID;
+String loggedInUserID = '';
 String loggedInUserPhoneNumber;
 User loggedInUser;
 String receivUserID;
@@ -72,11 +72,17 @@ setLoggedInUserPhoneNumber() async{
 }
 
 setLoggedInUserID() async{ 
+  lastSeenTime = '';
+  lst='';  
   boolGetLoggedInUserID = false;
   receivUserID = widget.receiverUserID;
- await Future.delayed(Duration.zero, (){
-   loggedInUserID = Provider.of<Auth>(context, listen: false).uidSharedPref;
- });
+  final prefs = await SharedPreferences.getInstance();
+  String uidSharedPref = prefs.getString("uid");
+  loggedInUserID = uidSharedPref;
+  // print(loggedInUserID);
+//  await Future.delayed(Duration.zero, (){
+//    loggedInUserID = Provider.of<Auth>(context, listen: false).uidSharedPref;
+//  });
  setState(() {
    boolGetLoggedInUserID = true;
  });
@@ -101,6 +107,7 @@ DocumentReference documentReference =
                 Firestore.instance.collection("users").document(widget.receiverUserID);
             documentReference.get().then((datasnapshot) {
               if (datasnapshot!=null) {
+                if(datasnapshot.data['lastSeen']!=null){
                 var timestamp = datasnapshot.data['lastSeen'];
           DateTime dt = DateTime.parse(timestamp.toDate().toString());
           if(DateTime.now().difference(dt).inSeconds<15 && this.mounted){
@@ -128,7 +135,8 @@ DocumentReference documentReference =
               online = false;
             });
           }
-         }            
+         }    
+              }        
           }
               else{
                 print("No such user");
@@ -143,12 +151,9 @@ recurringFunction(){
 
 @override
   void initState() {
-      lastSeenTime = '';
-    lst='';
-   
+    setLoggedInUserID(); 
     backButtonPressed = false;
-    setLoggedInUserPhoneNumber();
-    setLoggedInUserID();
+    setLoggedInUserPhoneNumber();    
     recurringFunction();
     super.initState();
   }
@@ -356,7 +361,7 @@ handleDownloadUrl(String downUrl){
  ), 
               ),
               title: Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.008),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.009),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
