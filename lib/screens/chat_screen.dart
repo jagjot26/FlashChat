@@ -780,7 +780,7 @@ class MessageBubble extends StatelessWidget {
                       message, style: TextStyle(fontSize: 15, color: Colors.white),),
                 ),
                 Padding(
-                  padding: (message.length>=40) ? EdgeInsets.symmetric(horizontal:10.0, vertical: 10) : EdgeInsets.only(left:10.0, right:10, top: 19) ,
+                  padding: (message.length>31) ? EdgeInsets.symmetric(horizontal:10.0, vertical: 10) : EdgeInsets.only(left:10.0, right:10, top: 19) ,
                   child: isMe ? 
                   Text(this.timestamp, style: TextStyle(fontSize: 11, color: Colors.black54),)
                    : Text(this.timestamp, style: TextStyle(fontSize: 11, color: Colors.white60),),
