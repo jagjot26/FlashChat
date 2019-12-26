@@ -125,13 +125,12 @@ firemessage.configure(
 String loggedInUid;
 updateLastSeen() async{
   
-if(loggedInUid==null){
- await Future.delayed(Duration.zero, (){
-   loggedInUid = Provider.of<Auth>(context, listen: false).uidSharedPref;
- });
+if(loggedInUserID==null){
+  final prefs = await SharedPreferences.getInstance();
+  loggedInUserID = prefs.getString("uid");
 }
-if(loggedInUid!=null){
-Firestore.instance.collection('users').document(loggedInUid).updateData({"lastSeen": DateTime.now()});
+if(loggedInUserID!=null){
+Firestore.instance.collection('users').document(loggedInUserID).updateData({"lastSeen": DateTime.now()});
 }
 }
 
