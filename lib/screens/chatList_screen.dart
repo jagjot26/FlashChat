@@ -198,14 +198,15 @@ recurringFunction(){
         ListTile(
       leading: Icon(Icons.person,color: Colors.blueGrey),
       title: Text('Edit Profile'),
-      onTap: (newBioUpdated == true) 
-      ? (){
+      onTap: (){
+       if(newBioUpdated == true){
            Navigator.of(context).pop();
            Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEdit(profileImageUrl: loggedInUserImgUrl, userName: loggedInUserName, about: newBio, phoneNumber: loggedInUserPhoneNumber,)));
-      }: () {
+       }else {
         Navigator.of(context).pop();
         Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileEdit(profileImageUrl: loggedInUserImgUrl, userName: loggedInUserName, about: loggedInUserBio, phoneNumber: loggedInUserPhoneNumber,)));
         
+      }
       },
         ),
         ListTile(
