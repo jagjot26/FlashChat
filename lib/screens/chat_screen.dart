@@ -258,7 +258,7 @@ handleDownloadUrl(String downUrl){
                             // indexFirestore += 1;  
                                                       
                               var data = {
-                                'time' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                'timestamp' : timestamp,
                                 'receiverID' : widget.receiverUserID,
                                 'phoneNumber' : widget.receiverPhoneNumber,
                                 'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
@@ -266,7 +266,7 @@ handleDownloadUrl(String downUrl){
                               };
 
                               var data2 = {
-                                'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                'timestamp' : timestamp,
                                 'receiverID' : loggedInUserID,
                                 'phoneNumber' : loggedInUserPhoneNumber,
                                 'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
@@ -460,7 +460,7 @@ handleDownloadUrl(String downUrl){
                                        isTextFieldEmpty = true;
                                     });                             
                                     var data = {
-                                      'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                      'timestamp' : timestamp,
                                       'receiverID' : widget.receiverUserID,
                                       'phoneNumber' : widget.receiverPhoneNumber,
                                       'image' : (widget.imageDownloadUrl == null) ? 'NoImage' : widget.imageDownloadUrl,
@@ -468,7 +468,7 @@ handleDownloadUrl(String downUrl){
                                     };
 
                                     var data2 = {
-                                      'timestamp' : formatDate(timestamp, [HH, ':', nn, ':', ss, ' ', am]).toString(),
+                                      'timestamp' : timestamp,
                                       'receiverID' : loggedInUserID,
                                       'phoneNumber' : loggedInUserPhoneNumber,
                                       'image' : (loggedInUserImage == null) ? 'NoImage' : loggedInUserImage,
