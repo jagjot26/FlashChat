@@ -14,6 +14,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 bool isImageDownloading;
 String newDownloadUrl=" ";
+String newBio="";
+bool newBioUpdated = false;
 
 class ProfileEdit extends StatefulWidget {
 
@@ -38,9 +40,9 @@ final usersRef = Firestore.instance.collection('users');
 final DateTime timestamp = DateTime.now();
 QuerySnapshot qs;
 
-String newBio="";
+
 bool isTextFieldEmpty=true;
-bool newBioUpdated = false;
+
 
 searchForUidViaPhoneNumberAndUpdateProfilePic(String downloadUrl) async{
   qs =  await usersRef.getDocuments();
@@ -65,6 +67,7 @@ searchForUidViaPhoneNumberAndUpdateProfilePic(String downloadUrl) async{
 TextEditingController tcontroller;
 
 handleBioChangerButton() async{
+ final prefs2 = await SharedPreferences.getInstance(); 
  qs =  await usersRef.getDocuments();
     var listOfDocuments = qs.documents;
     for(var dc in listOfDocuments){
@@ -82,12 +85,12 @@ handleBioChangerButton() async{
       });    
      }     
     }
+    prefs2.setString("loggedInUserBio",newBio);
     setState(() {
       newBioUpdated = true;
     });    
-    print(newBio);
-    final prefs2 = await SharedPreferences.getInstance();
-    prefs2.setString("loggedInUserBio",newBio);
+    print(newBio);    
+    
 }
 
 handleEditBio(BuildContext ctx){
