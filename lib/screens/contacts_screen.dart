@@ -70,7 +70,9 @@ fetchUsersRef() async{
 
 
 
-  Widget handleContacts(BuildContext context){
+  Widget handleContacts(BuildContext context, Timer timer){
+    isTimerLoading = true;
+    timer.cancel();
     return FutureBuilder(
       future: ContactsService.getContacts(withThumbnails: false),
       builder: (BuildContext context, AsyncSnapshot snapshot){
@@ -194,6 +196,21 @@ onContactTap(BuildContext context,String name, String receiverUserID, String rec
 //        );
 //      },);
 //  }
+bool isTimerLoading = false;
+Widget timerFunction(BuildContext context){
+  Timer timer1 = Timer(Duration(microseconds: 0),(){});
+  if(isTimerLoading==false){
+    return handleContacts(context, timer1);
+  }
+  else{
+  Timer timer = Timer(Duration(milliseconds: 700), (){
+    setState(() {
+      isTimerLoading = false;
+    });
+  });
+  return (isTimerLoading) ? shimmerEffect() : handleContacts(context, timer); 
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +236,7 @@ onContactTap(BuildContext context,String name, String receiverUserID, String rec
         ],
       ),
       body: SafeArea(
-        child: handleContacts(context),
+        child: timerFunction(context),
       ),
     );
   }

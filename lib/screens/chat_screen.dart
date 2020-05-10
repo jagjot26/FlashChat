@@ -760,13 +760,13 @@ class MessageBubble extends StatelessWidget {
                       onTap: ()=>fullScreenImageAttachment(context, message),
                       child:ClipRRect(
              borderRadius: new BorderRadius.circular(22.0),
-             child:  FadeInImage.assetNetwork(
-               fadeInDuration: Duration(milliseconds: 200),
-               fadeOutDuration: Duration(milliseconds: 200),
-               placeholder: 'gifs/go-top.gif',
-              image: message,
-               fit: BoxFit.fill,
-            ),
+             child:  CachedNetworkImage(
+      fadeInCurve: Curves.easeIn,
+      fadeOutCurve: Curves.easeOut,
+      imageUrl: message,
+      placeholder: (context, url) => spinkit(),
+      errorWidget: (context, url, error) => new Icon(Icons.error),
+    ),
             ),
             ),
             )
@@ -800,7 +800,13 @@ class MessageBubble extends StatelessWidget {
 
 
 
-
+// FadeInImage.assetNetwork(
+//                fadeInDuration: Duration(milliseconds: 200),
+//                fadeOutDuration: Duration(milliseconds: 200),
+//                placeholder: 'gifs/go-top.gif',
+//               image: message,
+//                fit: BoxFit.fill,
+//             ),
 
 
 
